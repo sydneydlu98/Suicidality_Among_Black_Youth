@@ -1,0 +1,80 @@
+---
+title: "Capstone"
+author: "Dingxin Lu"
+date: '2022-05-11'
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(gtsummary)
+library(boot)
+
+data <- read.csv("yrbs2019.csv")
+
+# subsetting black race
+black_data <- data %>%
+  filter(Q5 == "C")
+black_data
+summary(black_data)
+
+# outcome variables
+out <- black_data %>%
+  select(Q26,Q27, Q28, Q29)
+tbl_summary(out)
+
+# recoding Q28
+black_data$Q28 <- case_when(black_data$Q28 == '0 times' ~ '0 times',
+                       black_data$Q28 == '1 time' ~ '1 or more time',
+                       black_data$Q28 == '2 or 3 times' ~ '1 or more time',
+                       black_data$Q28 == '4 or 5 times' ~ '1 or more time',
+                       black_data$Q28 == '6 or more times' ~ '1 or more time',
+                       black_data$Q28 == 'Missing' ~ 'Missing')
+
+
+out <- black_data %>%
+  select(Q26,Q27, Q28, Q29)
+
+out_renamed <- rename(out,
+                    "Suicidal ideation"= "Q26",
+                    "Suicide planning"= "Q27",
+                    "Suicide attempts" = "Q28",
+                    "Severe Suicide attempts" = "Q29")
+
+tbl_summary(out_renamed)
+#tbl_summary(black_data)
+```
+
+```{r}
+cor.data <- black_data %>%
+  select(-Q5, -Q27, -Q28, -Q29, -QN65, -QN66, -SITE)
+
+# Q26 — suicidal ideation
+names <- colnames(cor.data[1:228])
+for (i in 1:228){
+    a <- paste("cor.data$",names[i], sep = "")
+    e <- eval(parse(text = a))
+    p_value[i] <- chisq.test(e, cor.data$Q26)$p.val
+}
+
+result_Q26_temp <- data.frame(names, signi = p_value <= 0.05)
+result_Q26 <- result[result_Q26_temp$signi == TRUE, ]
+result_Q26$names
+```
+
+
+```{r}
+# Q27 — suicide planning
+
+```
+
+```{r}
+# Q28 — suicide attempts (dichotomized)
+
+```
+
+```{r}
+# Q29 — severe suicide attempts
+
+```
+
