@@ -42,32 +42,49 @@ out_renamed <- rename(out,
                     "Suicide attempts" = "Q28",
                     "Severe Suicide attempts" = "Q29")
 
-#tbl_summary(out_renamed)
+tbl_summary(out_renamed)
 #tbl_summary(black_data)
 ```
 
 ```{r, warning=FALSE}
-cor.data <- black_data %>%
-  select(-Q5, -Q27, -Q28, -Q29, -QN65, -QN66, -SITE)
+QN_data <- black_data %>%
+  select(QN8:QN99)
+
+cor.data_26 <- QN_data %>%
+  select(-QN27, -QN28, -QN29, -QN65, -QN66)
 
 # Q26 — suicidal ideation
-names <- colnames(cor.data[1:228])
+names_26 <- colnames(cor.data_26[1:87])
 p_value <- c()
-for (i in 1:228){
-    a <- paste("cor.data$",names[i], sep = "")
+for (i in 1:87){
+    a <- paste("cor.data_26$",names_26[i], sep = "")
     e <- eval(parse(text = a))
-    p_value[i] <- chisq.test(e, cor.data$Q26)$p.val
+    p_value[i] <- chisq.test(e, cor.data_26$QN26)$p.val
 }
 
-result_Q26_temp <- data.frame(names, signi = p_value <= 0.05)
+result_Q26_temp <- data.frame(names_26, signi = p_value <= 0.05)
 result_Q26 <- result_Q26_temp[result_Q26_temp$signi == TRUE, ]
-result_Q26$names
+result_Q26$names_26
 ```
 
 
 ```{r}
 # Q27 — suicide planning
+cor.data_27 <- QN_data %>%
+  select(-QN26, -QN28, -QN29, -QN65, -QN66)
 
+# Q26 — suicidal ideation
+names_27 <- colnames(cor.data_27[1:87])
+p_value <- c()
+for (i in 1:87){
+    a <- paste("cor.data_27$",names_27[i], sep = "")
+    e <- eval(parse(text = a))
+    p_value[i] <- chisq.test(e, cor.data_27$QN27)$p.val
+}
+
+result_Q27_temp <- data.frame(names_27, signi = p_value <= 0.05)
+result_Q27 <- result_Q27_temp[result_Q27_temp$signi == TRUE, ]
+result_Q27$names_27
 ```
 
 ```{r}
