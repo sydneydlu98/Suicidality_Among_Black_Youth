@@ -14,43 +14,264 @@ data <- read.csv("yrbs2019.csv")
 ```
 
 ```{r}
-# subsetting black race
-black_data <- data %>%
+# only black
+black_only_data <- data %>%
   filter(Q5 == "C")
-#summary(black_data)
 
-# outcome variables
-out <- black_data %>%
-  select(Q26,Q27, Q28, Q29)
-#tbl_summary(out)
+# mix and black
+both <- data %>%
+  filter(grepl("C", data$Q5, fixed=TRUE))
+
+# only mix
+mix_race <- both %>%
+  filter(Q5 != "C")
+
+# only black = 2279
+nrow(black_only_data)
+# mix and black = 2797
+nrow(both)
+# only mix = 488
+nrow(mix_race)
+```
+
+```{r}
+# subsetting black & mixed race
+black_data <- data %>%
+  filter(grepl("C", data$Q5, fixed=TRUE)) %>%
+  filter(Q26 != "Missing" | Q27 != "Missing" | Q28 != "Missing" | Q29 != "Missing")
 
 # recoding Q28
-black_data$Q28 <- case_when(black_data$Q28 == '0 times' ~ '0 times',
-                       black_data$Q28 == '1 time' ~ '1 or more time',
-                       black_data$Q28 == '2 or 3 times' ~ '1 or more time',
-                       black_data$Q28 == '4 or 5 times' ~ '1 or more time',
-                       black_data$Q28 == '6 or more times' ~ '1 or more time',
-                       black_data$Q28 == 'Missing' ~ 'Missing')
+black_data$Q28 <- case_when(black_data$Q28 == '0 times' ~ 'No',
+                            black_data$Q28 == '1 time' ~ 'Yes',
+                            black_data$Q28 == '2 or 3 times' ~ 'Yes',
+                            black_data$Q28 == '4 or 5 times' ~ 'Yes',
+                            black_data$Q28 == '6 or more times' ~ 'Yes',
+                            black_data$Q28 == 'Missing' ~ 'Missing')
+
+black_data$Q29 <- case_when(black_data$Q29 == 'Did not attempt suicide' ~ 'No',
+                            black_data$Q29 == 'No' ~ 'No',
+                            black_data$Q29 == 'Yes' ~ 'Yes',
+                            black_data$Q29 == 'Missing' ~ 'Missing')
 
 
 out <- black_data %>%
-  select(Q26,Q27, Q28, Q29)
+  select(Q26, Q27, Q28, Q29) %>%
+  mutate(Q28 = replace(Q28, which(Q26 == "No" & Q27 == "No"), "No")) %>%
+  mutate(Q29 = replace(Q29, which(Q26 == "No" & Q27 == "No"), "No")) %>%
+  mutate(Q29 = replace(Q29, which(Q28 == "No"), "No")) %>%
+  mutate(Q28 = replace(Q28, which(Q29 == "Yes"), "Yes")) %>%
+  mutate(Q27 = replace(Q27, which(Q26 == "No"), "No"))  %>%
+  mutate(Q28 = replace(Q28, which(Q26 == "No"), "No"))  %>%
+  mutate(Q29 = replace(Q29, which(Q26 == "No"), "No")) %>%
+  mutate(Q26 = replace(Q26, which(Q27 == "Yes"), "Yes")) %>%
+  mutate(Q26 = replace(Q26, which(Q28 == "Yes"), "Yes")) %>%
+  mutate(Q26 = replace(Q26, which(Q29 == "Yes"), "Yes"))
+  
 
 out_renamed <- rename(out,
-                    "Suicidal ideation"= "Q26",
-                    "Suicide planning"= "Q27",
-                    "Suicide attempts" = "Q28",
-                    "Severe Suicide attempts" = "Q29")
+                      "Suicidal ideation"= "Q26",
+                      "Suicide planning"= "Q27",
+                      "Suicide attempts" = "Q28",
+                      "Severe Suicide attempts" = "Q29")
 
 tbl_summary(out_renamed)
-#tbl_summary(black_data)
+
+Q_4_var <- out %>%
+  group_by(Q26, Q27, Q28, Q29) %>%
+  summarise(n = n())
+
+Q_4_var
 ```
 
 ```{r, warning=FALSE}
 QN_data <- black_data %>%
   select(QN8:QN99)
 
-cor.data_26 <- QN_data %>%
+QN_clean_data <- QN_data %>%
+  mutate(QN28 = replace(QN28, which(QN26 == 2 & QN27 == 2), 2)) %>%
+  mutate(QN29 = replace(QN29, which(QN26 == 2 & QN27 == 2), 2)) %>%
+  mutate(QN29 = replace(QN29, which(QN28 == 2), 2)) %>%
+  mutate(QN28 = replace(QN28, which(QN29 == 1), 1)) %>%
+  mutate(QN27 = replace(QN27, which(QN26 == 2), 2)) %>%
+  mutate(QN28 = replace(QN28, which(QN26 == 2), 2)) %>%
+  mutate(QN29 = replace(QN29, which(QN26 == 2), 2)) %>%
+  mutate(QN26 = replace(QN26, which(QN27 == 1), 1)) %>%
+  mutate(QN26 = replace(QN26, which(QN28 == 1), 1)) %>%
+  mutate(QN26 = replace(QN26, which(QN29 == 1), 1))
+```
+
+```{r}
+# table1: demographic
+black_data1 <- black_data %>%
+  select(1:4, 6:7, 69:70) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+  
+black_data1
+```
+
+```{r}
+# table2: safety
+black_data2 <- black_data %>%
+  select(8:11) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data2
+```
+
+```{r}
+# table3: violence-related behaviors
+black_data3 <- black_data %>%
+  select(12:22) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data3
+```
+
+
+```{r}
+# table4: bullying
+black_data4 <- black_data %>%
+  select(23:24) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data4
+```
+
+```{r}
+# table5: sad feelings and attempted suicide
+black_data5 <- black_data %>%
+  select(25:29) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data5
+```
+
+```{r}
+# table6: cigarette smoking and tobacco products
+black_data6 <- black_data %>%
+  select(30:33, 37:39) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data6
+```
+
+```{r}
+# table7: electronic vapor products
+black_data7 <- black_data %>%
+  select(34:36) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data7
+```
+
+
+```{r}
+# table8: drinking alcohol
+black_data8 <- black_data %>%
+  select(40:44) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data8
+```
+
+```{r}
+# table9: marijuana use
+black_data9 <- black_data %>%
+  select(45:48) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data9
+```
+
+```{r}
+# table10: use of drugs
+black_data10 <- black_data %>%
+  select(49:59) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data10
+```
+
+```{r}
+#table11: sexual activity
+black_data11 <- black_data %>%
+  select(60:68) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data11
+```
+
+```{r}
+# table12: food & drink in past 7 days
+black_data12 <- black_data %>%
+  select(71:82) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data12
+```
+
+```{r}
+# table13: physical activity
+black_data13 <- black_data %>%
+  select(83:89) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data13
+```
+
+```{r}
+# table14: health related topics
+black_data14 <- black_data %>%
+  select(90:99) %>%
+  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
+  add_n() %>%
+  modify_header(label ~ "**Predictors**") %>%
+  bold_labels() 
+
+black_data14
+```
+
+```{r}
+cor.data_26 <- QN_clean_data %>%
   select(-QN27, -QN28, -QN29, -QN65, -QN66)
 
 # Q26 — suicidal ideation
@@ -70,7 +291,7 @@ result_Q26$names_26
 
 ```{r}
 # Q27 — suicide planning
-cor.data_27 <- QN_data %>%
+cor.data_27 <- QN_clean_data %>%
   select(-QN26, -QN28, -QN29, -QN65, -QN66)
 
 # Q26 — suicidal ideation
@@ -89,11 +310,39 @@ result_Q27$names_27
 
 ```{r}
 # Q28 — suicide attempts (dichotomized)
+cor.data_28 <- QN_clean_data %>%
+  select(-QN26, -QN27, -QN29, -QN65, -QN66)
 
+# Q26 — suicidal ideation
+names_28 <- colnames(cor.data_28[1:87])
+p_value <- c()
+for (i in 1:87){
+    a <- paste("cor.data_28$",names_28[i], sep = "")
+    e <- eval(parse(text = a))
+    p_value[i] <- chisq.test(e, cor.data_28$QN28)$p.val
+}
+
+result_Q28_temp <- data.frame(names_28, signi = p_value <= 0.05)
+result_Q28 <- result_Q28_temp[result_Q28_temp$signi == TRUE, ]
+result_Q28$names_28
 ```
 
 ```{r}
 # Q29 — severe suicide attempts
+cor.data_29 <- QN_clean_data %>%
+  select(-QN26, -QN27, -QN28, -QN65, -QN66)
 
+# Q26 — suicidal ideation
+names_29 <- colnames(cor.data_29[1:87])
+p_value <- c()
+for (i in 1:87){
+    a <- paste("cor.data_29$",names_29[i], sep = "")
+    e <- eval(parse(text = a))
+    p_value[i] <- chisq.test(e, cor.data_29$QN29)$p.val
+}
+
+result_Q29_temp <- data.frame(names_29, signi = p_value <= 0.05)
+result_Q29 <- result_Q29_temp[result_Q29_temp$signi == TRUE, ]
+result_Q29$names_29
 ```
 
