@@ -9,6 +9,8 @@ output: html_document
 library(dplyr)
 library(gtsummary)
 library(boot)
+library(table1)
+library(survey)
 
 data <- read.csv("yrbs2019.csv")
 ```
@@ -35,11 +37,23 @@ nrow(mix_race)
 ```
 
 ```{r}
-# subsetting black & mixed race
+# subsetting black
 black_data <- data %>%
-  filter(grepl("C", data$Q5, fixed=TRUE)) %>%
-  filter(Q26 != "Missing" | Q27 != "Missing" | Q28 != "Missing" | Q29 != "Missing")
+  filter(Q5 == "C") %>%
+  filter(Q26 != "Missing" | Q27 != "Missing" | Q28 != "Missing" | Q29 != "Missing") %>%
+  mutate(QN28 = replace(QN28, which(QN26 == 2 & QN27 == 2), 2)) %>%
+  mutate(QN29 = replace(QN29, which(QN26 == 2 & QN27 == 2), 2)) %>%
+  mutate(QN29 = replace(QN29, which(QN28 == 2), 2)) %>%
+  mutate(QN28 = replace(QN28, which(QN29 == 1), 1)) %>%
+  mutate(QN27 = replace(QN27, which(QN26 == 2), 2)) %>%
+  mutate(QN28 = replace(QN28, which(QN26 == 2), 2)) %>%
+  mutate(QN29 = replace(QN29, which(QN26 == 2), 2)) %>%
+  mutate(QN26 = replace(QN26, which(QN27 == 1), 1)) %>%
+  mutate(QN26 = replace(QN26, which(QN28 == 1), 1)) %>%
+  mutate(QN26 = replace(QN26, which(QN29 == 1), 1))
+```
 
+```{r}
 # recoding Q28
 black_data$Q28 <- case_when(black_data$Q28 == '0 times' ~ 'No',
                             black_data$Q28 == '1 time' ~ 'Yes',
@@ -81,23 +95,6 @@ Q_4_var <- out %>%
   summarise(n = n())
 
 Q_4_var
-```
-
-```{r, warning=FALSE}
-QN_data <- black_data %>%
-  select(QN8:QN99)
-
-QN_clean_data <- QN_data %>%
-  mutate(QN28 = replace(QN28, which(QN26 == 2 & QN27 == 2), 2)) %>%
-  mutate(QN29 = replace(QN29, which(QN26 == 2 & QN27 == 2), 2)) %>%
-  mutate(QN29 = replace(QN29, which(QN28 == 2), 2)) %>%
-  mutate(QN28 = replace(QN28, which(QN29 == 1), 1)) %>%
-  mutate(QN27 = replace(QN27, which(QN26 == 2), 2)) %>%
-  mutate(QN28 = replace(QN28, which(QN26 == 2), 2)) %>%
-  mutate(QN29 = replace(QN29, which(QN26 == 2), 2)) %>%
-  mutate(QN26 = replace(QN26, which(QN27 == 1), 1)) %>%
-  mutate(QN26 = replace(QN26, which(QN28 == 1), 1)) %>%
-  mutate(QN26 = replace(QN26, which(QN29 == 1), 1))
 ```
 
 ```{r}
@@ -271,78 +268,102 @@ black_data14
 ```
 
 ```{r}
-cor.data_26 <- QN_clean_data %>%
-  select(-QN27, -QN28, -QN29, -QN65, -QN66)
+black_data$QN26 = black_data$QN26 - 1
+black_data$QN27 = black_data$QN27 - 1
+black_data$QN28 = black_data$QN28 - 1
+black_data$QN29 = black_data$QN29 - 1
+```
 
-# Q26 — suicidal ideation
-names_26 <- colnames(cor.data_26[1:87])
-p_value <- c()
-for (i in 1:87){
-    a <- paste("cor.data_26$",names_26[i], sep = "")
-    e <- eval(parse(text = a))
-    p_value[i] <- chisq.test(e, cor.data_26$QN26)$p.val
-}
+```{r}
+yrbsdes <- svydesign(id=~PSU, 
+                     weight=~WEIGHT, 
+                     strata=~STRATUM, 
+                     data=black_data, 
+                     nest=TRUE)
 
-result_Q26_temp <- data.frame(names_26, signi = p_value <= 0.05)
-result_Q26 <- result_Q26_temp[result_Q26_temp$signi == TRUE, ]
-result_Q26$names_26
+# QN26 — suicidal ideation
+QN26.1 <-
+  svyglm(
+    QN26 ~ QN8 + QN9 + QN10 + QN11 + QN12 + QN13 + QN14 + QN15 + QN16 + QN17 + QN18 + QN19 + QN20 +
+      QN21 + QN22 + QN23 + QN24 + QN25 +QN30,
+    yrbsdes,
+    family = quasibinomial()
+  )
+summary(QN26.1)
+
+QN26.2 <-
+  svyglm(
+    QN26 ~ QN31 + QN32 + QN33 + QN34 + QN35 + QN36 + QN37 + QN38 + QN39 + QN40 + QN41 + QN42 + QN43 + QN44 + QN45 + QN46 + QN47 + QN48 + QN49+ QN50 + QN51 + QN52,
+    yrbsdes,
+    family = quasibinomial()
+  )
+summary(QN26.2)
 ```
 
 
 ```{r}
-# Q27 — suicide planning
-cor.data_27 <- QN_clean_data %>%
-  select(-QN26, -QN28, -QN29, -QN65, -QN66)
+# QN27 — suicide planning
+QN27 <-
+  svyglm(
+    QN27 ~ QN8 + QN9 + QN10 + QN11 + QN12 + QN13 + QN14 + QN15 + QN16 + QN17 +
+      QN18 + QN19 + QN20 + QN21 + QN22 + QN23 + QN24 + QN25
+    + QN30 + QN31 + QN32 + QN33 + QN34 + QN35 + QN36 + QN37 +
+      QN38 + QN39 + QN40 + QN41 + QN42 + QN43 + QN44 + QN45 + QN46 + QN47 + QN48 + QN49
+    + QN50 + QN51 + QN52 + QN53 + QN54 + QN55 + QN56 + QN57 +
+      QN58 + QN59 + QN60 + QN61 + QN62 + QN63 + QN64 + QN67 + QN68 + QN69
+    + QN70 + QN71 + QN72 + QN73 + QN74 + QN75 + QN76 + QN77 +
+      QN78 + QN79 + QN80 + QN81 + QN82 + QN83 + QN84 + QN85 + QN86 + QN87 + QN88 + QN89
+    + QN90 + QN91 + QN92 + QN93 + QN94 + QN95 + QN96 + QN97 + QN98 + QN99,
+    yrbsdes,
+    family = quasibinomial()
+  )
 
-# Q26 — suicidal ideation
-names_27 <- colnames(cor.data_27[1:87])
-p_value <- c()
-for (i in 1:87){
-    a <- paste("cor.data_27$",names_27[i], sep = "")
-    e <- eval(parse(text = a))
-    p_value[i] <- chisq.test(e, cor.data_27$QN27)$p.val
-}
-
-result_Q27_temp <- data.frame(names_27, signi = p_value <= 0.05)
-result_Q27 <- result_Q27_temp[result_Q27_temp$signi == TRUE, ]
-result_Q27$names_27
+summary(QN27)
 ```
 
 ```{r}
-# Q28 — suicide attempts (dichotomized)
-cor.data_28 <- QN_clean_data %>%
-  select(-QN26, -QN27, -QN29, -QN65, -QN66)
+# QN28 — suicide attempts (dichotomized)
+QN28 <-
+  svyglm(
+    QN28 ~ QN8 + QN9 + QN10 + QN11 + QN12 + QN13 + QN14 + QN15 + QN16 + QN17 +
+      QN18 + QN19 + QN20 + QN21 + QN22 + QN23 + QN24 + QN25
+    + QN30 + QN31 + QN32 + QN33 + QN34 + QN35 + QN36 + QN37 +
+      QN38 + QN39 + QN40 + QN41 + QN42 + QN43 + QN44 + QN45 + QN46 + QN47 + QN48 +
+      QN49
+    + QN50 + QN51 + QN52 + QN53 + QN54 + QN55 + QN56 + QN57 +
+      QN58 + QN59 + QN60 + QN61 + QN62 + QN63 + QN64 + QN67 + QN68 + QN69
+    + QN70 + QN71 + QN72 + QN73 + QN74 + QN75 + QN76 + QN77 +
+      QN78 + QN79 + QN80 + QN81 + QN82 + QN83 + QN84 + QN85 + QN86 + QN87 + QN88 +
+      QN89
+    + QN90 + QN91 + QN92 + QN93 + QN94 + QN95 + QN96 + QN97 +
+      QN98 + QN99,
+    yrbsdes,
+    family = quasibinomial()
+  )
 
-# Q26 — suicidal ideation
-names_28 <- colnames(cor.data_28[1:87])
-p_value <- c()
-for (i in 1:87){
-    a <- paste("cor.data_28$",names_28[i], sep = "")
-    e <- eval(parse(text = a))
-    p_value[i] <- chisq.test(e, cor.data_28$QN28)$p.val
-}
-
-result_Q28_temp <- data.frame(names_28, signi = p_value <= 0.05)
-result_Q28 <- result_Q28_temp[result_Q28_temp$signi == TRUE, ]
-result_Q28$names_28
+summary(QN28)
 ```
 
 ```{r}
-# Q29 — severe suicide attempts
-cor.data_29 <- QN_clean_data %>%
-  select(-QN26, -QN27, -QN28, -QN65, -QN66)
+# QN29 — severe suicide attempts
+QN29 <-
+  svyglm(
+    QN29 ~ QN8 + QN9 + QN10 + QN11 + QN12 + QN13 + QN14 + QN15 + QN16 + QN17 +
+      QN18 + QN19 + QN20 + QN21 + QN22 + QN23 + QN24 + QN25
+    + QN30 + QN31 + QN32 + QN33 + QN34 + QN35 + QN36 + QN37 +
+      QN38 + QN39 + QN40 + QN41 + QN42 + QN43 + QN44 + QN45 + QN46 + QN47 + QN48 +
+      QN49
+    + QN50 + QN51 + QN52 + QN53 + QN54 + QN55 + QN56 + QN57 +
+      QN58 + QN59 + QN60 + QN61 + QN62 + QN63 + QN64 + QN67 + QN68 + QN69
+    + QN70 + QN71 + QN72 + QN73 + QN74 + QN75 + QN76 + QN77 +
+      QN78 + QN79 + QN80 + QN81 + QN82 + QN83 + QN84 + QN85 + QN86 + QN87 + QN88 +
+      QN89
+    + QN90 + QN91 + QN92 + QN93 + QN94 + QN95 + QN96 + QN97 +
+      QN98 + QN99,
+    yrbsdes,
+    family = quasibinomial()
+  )
 
-# Q26 — suicidal ideation
-names_29 <- colnames(cor.data_29[1:87])
-p_value <- c()
-for (i in 1:87){
-    a <- paste("cor.data_29$",names_29[i], sep = "")
-    e <- eval(parse(text = a))
-    p_value[i] <- chisq.test(e, cor.data_29$QN29)$p.val
-}
-
-result_Q29_temp <- data.frame(names_29, signi = p_value <= 0.05)
-result_Q29 <- result_Q29_temp[result_Q29_temp$signi == TRUE, ]
-result_Q29$names_29
+summary(QN29)
 ```
 
