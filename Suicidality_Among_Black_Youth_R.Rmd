@@ -2,8 +2,18 @@
 title: "Capstone"
 author: "Dingxin Lu"
 date: '2022-05-11'
-output: html_document
+output: 
+  html_document:
+   df_print: paged
+   toc: true 
+   toc_depth: 2  
+   number_sections: false
+   toc_float:
+     collapsed: true
+     smooth_scroll: true
 ---
+
+# read in data
 
 ```{r, warning=FALSE, message=FALSE}
 library(dplyr)
@@ -11,36 +21,18 @@ library(gtsummary)
 library(boot)
 library(table1)
 library(survey)
+library(broom)
+library(MASS)
 
 data <- read.csv("yrbs2019.csv")
 ```
 
-```{r}
-# only black
-black_only_data <- data %>%
-  filter(Q5 == "C")
-
-# mix and black
-both <- data %>%
-  filter(grepl("C", data$Q5, fixed=TRUE))
-
-# only mix
-mix_race <- both %>%
-  filter(Q5 != "C")
-
-# only black = 2279
-nrow(black_only_data)
-# mix and black = 2797
-nrow(both)
-# only mix = 488
-nrow(mix_race)
-```
+# subset black data
 
 ```{r}
 # subsetting black
 black_data <- data %>%
   filter(Q5 == "C") %>%
-  filter(Q26 != "Missing" | Q27 != "Missing" | Q28 != "Missing" | Q29 != "Missing") %>%
   mutate(QN28 = replace(QN28, which(QN26 == 2 & QN27 == 2), 2)) %>%
   mutate(QN29 = replace(QN29, which(QN26 == 2 & QN27 == 2), 2)) %>%
   mutate(QN29 = replace(QN29, which(QN28 == 2), 2)) %>%
@@ -50,222 +42,11 @@ black_data <- data %>%
   mutate(QN29 = replace(QN29, which(QN26 == 2), 2)) %>%
   mutate(QN26 = replace(QN26, which(QN27 == 1), 1)) %>%
   mutate(QN26 = replace(QN26, which(QN28 == 1), 1)) %>%
-  mutate(QN26 = replace(QN26, which(QN29 == 1), 1))
+  mutate(QN26 = replace(QN26, which(QN29 == 1), 1)) %>%
+  filter(QN26 != 'NA' | QN27 != 'NA' | QN28 != 'NA' | QN29 != 'NA') 
 ```
 
-```{r}
-# recoding Q28
-black_data$Q28 <- case_when(black_data$Q28 == '0 times' ~ 'No',
-                            black_data$Q28 == '1 time' ~ 'Yes',
-                            black_data$Q28 == '2 or 3 times' ~ 'Yes',
-                            black_data$Q28 == '4 or 5 times' ~ 'Yes',
-                            black_data$Q28 == '6 or more times' ~ 'Yes',
-                            black_data$Q28 == 'Missing' ~ 'Missing')
-
-black_data$Q29 <- case_when(black_data$Q29 == 'Did not attempt suicide' ~ 'No',
-                            black_data$Q29 == 'No' ~ 'No',
-                            black_data$Q29 == 'Yes' ~ 'Yes',
-                            black_data$Q29 == 'Missing' ~ 'Missing')
-
-
-out <- black_data %>%
-  select(Q26, Q27, Q28, Q29) %>%
-  mutate(Q28 = replace(Q28, which(Q26 == "No" & Q27 == "No"), "No")) %>%
-  mutate(Q29 = replace(Q29, which(Q26 == "No" & Q27 == "No"), "No")) %>%
-  mutate(Q29 = replace(Q29, which(Q28 == "No"), "No")) %>%
-  mutate(Q28 = replace(Q28, which(Q29 == "Yes"), "Yes")) %>%
-  mutate(Q27 = replace(Q27, which(Q26 == "No"), "No"))  %>%
-  mutate(Q28 = replace(Q28, which(Q26 == "No"), "No"))  %>%
-  mutate(Q29 = replace(Q29, which(Q26 == "No"), "No")) %>%
-  mutate(Q26 = replace(Q26, which(Q27 == "Yes"), "Yes")) %>%
-  mutate(Q26 = replace(Q26, which(Q28 == "Yes"), "Yes")) %>%
-  mutate(Q26 = replace(Q26, which(Q29 == "Yes"), "Yes"))
-  
-
-out_renamed <- rename(out,
-                      "Suicidal ideation"= "Q26",
-                      "Suicide planning"= "Q27",
-                      "Suicide attempts" = "Q28",
-                      "Severe Suicide attempts" = "Q29")
-
-tbl_summary(out_renamed)
-
-Q_4_var <- out %>%
-  group_by(Q26, Q27, Q28, Q29) %>%
-  summarise(n = n())
-
-Q_4_var
-```
-
-```{r}
-# table1: demographic
-black_data1 <- black_data %>%
-  select(1:4, 6:7, 69:70) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-  
-black_data1
-```
-
-```{r}
-# table2: safety
-black_data2 <- black_data %>%
-  select(8:11) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data2
-```
-
-```{r}
-# table3: violence-related behaviors
-black_data3 <- black_data %>%
-  select(12:22) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data3
-```
-
-
-```{r}
-# table4: bullying
-black_data4 <- black_data %>%
-  select(23:24) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data4
-```
-
-```{r}
-# table5: sad feelings and attempted suicide
-black_data5 <- black_data %>%
-  select(25:29) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data5
-```
-
-```{r}
-# table6: cigarette smoking and tobacco products
-black_data6 <- black_data %>%
-  select(30:33, 37:39) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data6
-```
-
-```{r}
-# table7: electronic vapor products
-black_data7 <- black_data %>%
-  select(34:36) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data7
-```
-
-
-```{r}
-# table8: drinking alcohol
-black_data8 <- black_data %>%
-  select(40:44) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data8
-```
-
-```{r}
-# table9: marijuana use
-black_data9 <- black_data %>%
-  select(45:48) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data9
-```
-
-```{r}
-# table10: use of drugs
-black_data10 <- black_data %>%
-  select(49:59) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data10
-```
-
-```{r}
-#table11: sexual activity
-black_data11 <- black_data %>%
-  select(60:68) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data11
-```
-
-```{r}
-# table12: food & drink in past 7 days
-black_data12 <- black_data %>%
-  select(71:82) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data12
-```
-
-```{r}
-# table13: physical activity
-black_data13 <- black_data %>%
-  select(83:89) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data13
-```
-
-```{r}
-# table14: health related topics
-black_data14 <- black_data %>%
-  select(90:99) %>%
-  tbl_summary(statistic = all_continuous() ~ "{mean}") %>% 
-  add_n() %>%
-  modify_header(label ~ "**Predictors**") %>%
-  bold_labels() 
-
-black_data14
-```
+# Statistical analysis
 
 ```{r}
 black_data$QN26 = black_data$QN26 - 1
@@ -275,95 +56,212 @@ black_data$QN29 = black_data$QN29 - 1
 ```
 
 ```{r}
+# weighted design data
 yrbsdes <- svydesign(id=~PSU, 
                      weight=~WEIGHT, 
                      strata=~STRATUM, 
                      data=black_data, 
                      nest=TRUE)
-
-# QN26 — suicidal ideation
-QN26.1 <-
-  svyglm(
-    QN26 ~ QN8 + QN9 + QN10 + QN11 + QN12 + QN13 + QN14 + QN15 + QN16 + QN17 + QN18 + QN19 + QN20 +
-      QN21 + QN22 + QN23 + QN24 + QN25 +QN30,
-    yrbsdes,
-    family = quasibinomial()
-  )
-summary(QN26.1)
-
-QN26.2 <-
-  svyglm(
-    QN26 ~ QN31 + QN32 + QN33 + QN34 + QN35 + QN36 + QN37 + QN38 + QN39 + QN40 + QN41 + QN42 + QN43 + QN44 + QN45 + QN46 + QN47 + QN48 + QN49+ QN50 + QN51 + QN52,
-    yrbsdes,
-    family = quasibinomial()
-  )
-summary(QN26.2)
 ```
 
+# QN26
 
 ```{r}
-# QN27 — suicide planning
-QN27 <-
-  svyglm(
-    QN27 ~ QN8 + QN9 + QN10 + QN11 + QN12 + QN13 + QN14 + QN15 + QN16 + QN17 +
-      QN18 + QN19 + QN20 + QN21 + QN22 + QN23 + QN24 + QN25
-    + QN30 + QN31 + QN32 + QN33 + QN34 + QN35 + QN36 + QN37 +
-      QN38 + QN39 + QN40 + QN41 + QN42 + QN43 + QN44 + QN45 + QN46 + QN47 + QN48 + QN49
-    + QN50 + QN51 + QN52 + QN53 + QN54 + QN55 + QN56 + QN57 +
-      QN58 + QN59 + QN60 + QN61 + QN62 + QN63 + QN64 + QN67 + QN68 + QN69
-    + QN70 + QN71 + QN72 + QN73 + QN74 + QN75 + QN76 + QN77 +
-      QN78 + QN79 + QN80 + QN81 + QN82 + QN83 + QN84 + QN85 + QN86 + QN87 + QN88 + QN89
-    + QN90 + QN91 + QN92 + QN93 + QN94 + QN95 + QN96 + QN97 + QN98 + QN99,
-    yrbsdes,
-    family = quasibinomial()
-  )
+QN26.svy.QN8 <- summary(svyglm(QN26 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN9 <- summary(svyglm(QN26 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN10 <- summary(svyglm(QN26 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN11 <- summary(svyglm(QN26 ~ QN11, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN12 <- summary(svyglm(QN26 ~ QN12, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN13 <- summary(svyglm(QN26 ~ QN13, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN14 <- summary(svyglm(QN26 ~ QN14, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN15 <- summary(svyglm(QN26 ~ QN15, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN16 <- summary(svyglm(QN26 ~ QN16, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN17 <- summary(svyglm(QN26 ~ QN17, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN18 <- summary(svyglm(QN26 ~ QN18, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN19 <- summary(svyglm(QN26 ~ QN19, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN20 <- summary(svyglm(QN26 ~ QN20, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN21 <- summary(svyglm(QN26 ~ QN21, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN22 <- summary(svyglm(QN26 ~ QN22, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN23 <- summary(svyglm(QN26 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN24 <- summary(svyglm(QN26 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN25 <- summary(svyglm(QN26 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN27 <- summary(svyglm(QN26 ~ QN27, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN28 <- summary(svyglm(QN26 ~ QN28, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN29 <- summary(svyglm(QN26 ~ QN29, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN30 <- summary(svyglm(QN26 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN31 <- summary(svyglm(QN26 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN32 <- summary(svyglm(QN26 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN33 <- summary(svyglm(QN26 ~ QN33, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN34 <- summary(svyglm(QN26 ~ QN34, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN35 <- summary(svyglm(QN26 ~ QN35, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN36 <- summary(svyglm(QN26 ~ QN36, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN37 <- summary(svyglm(QN26 ~ QN37, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN38 <- summary(svyglm(QN26 ~ QN38, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN39 <- summary(svyglm(QN26 ~ QN39, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN40 <- summary(svyglm(QN26 ~ QN40, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN41 <- summary(svyglm(QN26 ~ QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN42 <- summary(svyglm(QN26 ~ QN42, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN43 <- summary(svyglm(QN26 ~ QN43, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN44 <- summary(svyglm(QN26 ~ QN44, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN45 <- summary(svyglm(QN26 ~ QN45, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN46 <- summary(svyglm(QN26 ~ QN46, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN47 <- summary(svyglm(QN26 ~ QN47, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN48 <- summary(svyglm(QN26 ~ QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN49 <- summary(svyglm(QN26 ~ QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN50 <- summary(svyglm(QN26 ~ QN50, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN51 <- summary(svyglm(QN26 ~ QN51, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN52 <- summary(svyglm(QN26 ~ QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN53 <- summary(svyglm(QN26 ~ QN53, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN54 <- summary(svyglm(QN26 ~ QN54, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN55 <- summary(svyglm(QN26 ~ QN55, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN56 <- summary(svyglm(QN26 ~ QN56, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN57 <- summary(svyglm(QN26 ~ QN57, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN58 <- summary(svyglm(QN26 ~ QN58, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN59 <- summary(svyglm(QN26 ~ QN59, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN60 <- summary(svyglm(QN26 ~ QN60, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN61 <- summary(svyglm(QN26 ~ QN61, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN62 <- summary(svyglm(QN26 ~ QN62, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN63 <- summary(svyglm(QN26 ~ QN63, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN64 <- summary(svyglm(QN26 ~ QN64, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN67 <- summary(svyglm(QN26 ~ QN67, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN68 <- summary(svyglm(QN26 ~ QN68, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN69 <- summary(svyglm(QN26 ~ QN69, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN70 <- summary(svyglm(QN26 ~ QN70, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN71 <- summary(svyglm(QN26 ~ QN71, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN72 <- summary(svyglm(QN26 ~ QN72, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN73 <- summary(svyglm(QN26 ~ QN73, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN74 <- summary(svyglm(QN26 ~ QN74, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN75 <- summary(svyglm(QN26 ~ QN75, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN76 <- summary(svyglm(QN26 ~ QN76, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN77 <- summary(svyglm(QN26 ~ QN77, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN78 <- summary(svyglm(QN26 ~ QN78, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN79 <- summary(svyglm(QN26 ~ QN79, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN80 <- summary(svyglm(QN26 ~ QN80, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN81 <- summary(svyglm(QN26 ~ QN81, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN82 <- summary(svyglm(QN26 ~ QN82, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN83 <- summary(svyglm(QN26 ~ QN83, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN84 <- summary(svyglm(QN26 ~ QN84, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN85 <- summary(svyglm(QN26 ~ QN85, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN86 <- summary(svyglm(QN26 ~ QN86, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN87 <- summary(svyglm(QN26 ~ QN87, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN88 <- summary(svyglm(QN26 ~ QN88, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN89 <- summary(svyglm(QN26 ~ QN89, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN90 <- summary(svyglm(QN26 ~ QN90, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN91 <- summary(svyglm(QN26 ~ QN91, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN92 <- summary(svyglm(QN26 ~ QN92, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN93 <- summary(svyglm(QN26 ~ QN93, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN94 <- summary(svyglm(QN26 ~ QN94, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN95 <- summary(svyglm(QN26 ~ QN95, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN96 <- summary(svyglm(QN26 ~ QN96, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN97 <- summary(svyglm(QN26 ~ QN97, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN98 <- summary(svyglm(QN26 ~ QN98, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26.svy.QN99 <- summary(svyglm(QN26 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
 
-summary(QN27)
-```
+QN26_table <- data.frame(
+  Variable = c(8:25, 27:64, 67:99),
+  QN26_p.val = rbind(
+    QN26.svy.QN8$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN9$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN10$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN11$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN12$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN13$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN14$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN15$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN16$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN17$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN18$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN19$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN20$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN21$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN22$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN23$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN24$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN25$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN27$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN28$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN29$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN30$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN31$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN32$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN33$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN34$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN35$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN36$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN37$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN38$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN39$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN40$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN41$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN42$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN43$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN44$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN45$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN46$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN47$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN48$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN49$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN50$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN51$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN52$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN53$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN54$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN55$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN56$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN57$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN58$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN59$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN60$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN61$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN62$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN63$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN64$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN67$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN68$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN69$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN70$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN71$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN72$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN73$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN74$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN75$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN76$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN77$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN78$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN79$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN80$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN81$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN82$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN83$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN84$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN85$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN86$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN87$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN88$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN89$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN90$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN91$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN92$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN93$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN94$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN95$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN96$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN97$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN98$coef[-1, "Pr(>|t|)"],
+    QN26.svy.QN99$coef[-1, "Pr(>|t|)"]
+  )
+)
+
+QN26_order <- QN26_table %>%
+  filter(QN26_p.val <= 0.05) %>%
+  arrange(QN26_p.val)
+
+QN26_order
+``` 
 
 ```{r}
-# QN28 — suicide attempts (dichotomized)
-QN28 <-
-  svyglm(
-    QN28 ~ QN8 + QN9 + QN10 + QN11 + QN12 + QN13 + QN14 + QN15 + QN16 + QN17 +
-      QN18 + QN19 + QN20 + QN21 + QN22 + QN23 + QN24 + QN25
-    + QN30 + QN31 + QN32 + QN33 + QN34 + QN35 + QN36 + QN37 +
-      QN38 + QN39 + QN40 + QN41 + QN42 + QN43 + QN44 + QN45 + QN46 + QN47 + QN48 +
-      QN49
-    + QN50 + QN51 + QN52 + QN53 + QN54 + QN55 + QN56 + QN57 +
-      QN58 + QN59 + QN60 + QN61 + QN62 + QN63 + QN64 + QN67 + QN68 + QN69
-    + QN70 + QN71 + QN72 + QN73 + QN74 + QN75 + QN76 + QN77 +
-      QN78 + QN79 + QN80 + QN81 + QN82 + QN83 + QN84 + QN85 + QN86 + QN87 + QN88 +
-      QN89
-    + QN90 + QN91 + QN92 + QN93 + QN94 + QN95 + QN96 + QN97 +
-      QN98 + QN99,
-    yrbsdes,
-    family = quasibinomial()
-  )
-
-summary(QN28)
+#forward selection
+summary(svyglm(QN26 ~ QN27+QN28+QN29+QN25+QN24+QN23+QN41+QN49+QN53+QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
 ```
 
-```{r}
-# QN29 — severe suicide attempts
-QN29 <-
-  svyglm(
-    QN29 ~ QN8 + QN9 + QN10 + QN11 + QN12 + QN13 + QN14 + QN15 + QN16 + QN17 +
-      QN18 + QN19 + QN20 + QN21 + QN22 + QN23 + QN24 + QN25
-    + QN30 + QN31 + QN32 + QN33 + QN34 + QN35 + QN36 + QN37 +
-      QN38 + QN39 + QN40 + QN41 + QN42 + QN43 + QN44 + QN45 + QN46 + QN47 + QN48 +
-      QN49
-    + QN50 + QN51 + QN52 + QN53 + QN54 + QN55 + QN56 + QN57 +
-      QN58 + QN59 + QN60 + QN61 + QN62 + QN63 + QN64 + QN67 + QN68 + QN69
-    + QN70 + QN71 + QN72 + QN73 + QN74 + QN75 + QN76 + QN77 +
-      QN78 + QN79 + QN80 + QN81 + QN82 + QN83 + QN84 + QN85 + QN86 + QN87 + QN88 +
-      QN89
-    + QN90 + QN91 + QN92 + QN93 + QN94 + QN95 + QN96 + QN97 +
-      QN98 + QN99,
-    yrbsdes,
-    family = quasibinomial()
-  )
-
-summary(QN29)
-```
 
