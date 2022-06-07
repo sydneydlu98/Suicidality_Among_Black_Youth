@@ -67,6 +67,22 @@ yrbsdes <- svydesign(id=~PSU,
 # QN26
 
 ```{r}
+cor.data <- black_data %>%
+  select(QN8:QN99) %>%
+  select(-QN65, -QN66)
+
+lr <- c()
+for (i in colnames(cor.data)){
+      lr[i] <- svyglm(formula = QN29 ~ cor.data[[i]], design = yrbsdes, family = quasibinomial())
+}
+
+df_val = data.frame(value = lr)
+
+df_val %>%
+  arrange(value)
+```
+
+```{r}
 QN26.svy.QN8 <- summary(svyglm(QN26 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN9 <- summary(svyglm(QN26 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN10 <- summary(svyglm(QN26 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
