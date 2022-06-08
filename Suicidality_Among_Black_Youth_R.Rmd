@@ -67,18 +67,26 @@ yrbsdes <- svydesign(id=~PSU,
 # QN26
 
 ```{r}
-cor.data <- black_data %>%
-  select(QN8:QN99) %>%
-  select(-QN65, -QN66)
-
-lr <- c()
-for (i in colnames(cor.data)){
-      lr[i] <- svyglm(formula = QN29 ~ cor.data[[i]], design = yrbsdes, family = quasibinomial())
+part1 <- c()
+for (i in 1:18){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df1 <- data.frame(value = part1) %>% na.omit()
 }
 
-df_val = data.frame(value = lr)
+part2 <- c()
+for (i in 23:57){
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df2 <- data.frame(value = part2) %>% na.omit()
+}
 
-df_val %>%
+part3 <- c()
+for (i in 60:92){
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df3 <- data.frame(value = part3) %>% na.omit()
+}
+
+df_26 <- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+df_26 %>%
   arrange(value)
 ```
 
@@ -101,9 +109,6 @@ QN26.svy.QN22 <- summary(svyglm(QN26 ~ QN22, data = black_data, design = yrbsdes
 QN26.svy.QN23 <- summary(svyglm(QN26 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN24 <- summary(svyglm(QN26 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN25 <- summary(svyglm(QN26 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
-QN26.svy.QN27 <- summary(svyglm(QN26 ~ QN27, data = black_data, design = yrbsdes, family = quasibinomial()))
-QN26.svy.QN28 <- summary(svyglm(QN26 ~ QN28, data = black_data, design = yrbsdes, family = quasibinomial()))
-QN26.svy.QN29 <- summary(svyglm(QN26 ~ QN29, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN30 <- summary(svyglm(QN26 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN31 <- summary(svyglm(QN26 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN32 <- summary(svyglm(QN26 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
@@ -174,7 +179,7 @@ QN26.svy.QN98 <- summary(svyglm(QN26 ~ QN98, data = black_data, design = yrbsdes
 QN26.svy.QN99 <- summary(svyglm(QN26 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
 
 QN26_table <- data.frame(
-  Variable = c(8:25, 27:64, 67:99),
+  Variable = c(8:25, 30:64, 67:99),
   QN26_p.val = rbind(
     QN26.svy.QN8$coef[-1, "Pr(>|t|)"],
     QN26.svy.QN9$coef[-1, "Pr(>|t|)"],
@@ -194,9 +199,6 @@ QN26_table <- data.frame(
     QN26.svy.QN23$coef[-1, "Pr(>|t|)"],
     QN26.svy.QN24$coef[-1, "Pr(>|t|)"],
     QN26.svy.QN25$coef[-1, "Pr(>|t|)"],
-    QN26.svy.QN27$coef[-1, "Pr(>|t|)"],
-    QN26.svy.QN28$coef[-1, "Pr(>|t|)"],
-    QN26.svy.QN29$coef[-1, "Pr(>|t|)"],
     QN26.svy.QN30$coef[-1, "Pr(>|t|)"],
     QN26.svy.QN31$coef[-1, "Pr(>|t|)"],
     QN26.svy.QN32$coef[-1, "Pr(>|t|)"],
@@ -276,8 +278,679 @@ QN26_order
 ``` 
 
 ```{r}
-#forward selection
-summary(svyglm(QN26 ~ QN27+QN28+QN29+QN25+QN24+QN23+QN41+QN49+QN53+QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
+#final model
+summary(svyglm(QN26 ~ QN25+QN24+QN23+QN41+QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+#QN25: Felt sad or hopeless (Sad or hopeless)
+#QN24: Were electronically bullied (Electronic bullying)
+#QN23: Were bullied on school property (Bullying at school)
+#QN41: Current alcohol use; Dependence: Required by QN44
+#QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use)
+```
+
+## QN27
+
+```{r}
+part1 <- c()
+for (i in 1:18){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df1 <- data.frame(value = part1) %>% na.omit()
+}
+
+part2 <- c()
+for (i in 23:57){
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df2 <- data.frame(value = part2) %>% na.omit()
+}
+
+part3 <- c()
+for (i in 60:92){
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df3 <- data.frame(value = part3) %>% na.omit()
+}
+
+df_27 <- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+df_27 %>%
+  arrange(value)
+```
+
+```{r}
+QN27.svy.QN8 <- summary(svyglm(QN27 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN9 <- summary(svyglm(QN27 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN10 <- summary(svyglm(QN27 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN11 <- summary(svyglm(QN27 ~ QN11, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN12 <- summary(svyglm(QN27 ~ QN12, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN13 <- summary(svyglm(QN27 ~ QN13, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN14 <- summary(svyglm(QN27 ~ QN14, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN15 <- summary(svyglm(QN27 ~ QN15, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN16 <- summary(svyglm(QN27 ~ QN16, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN17 <- summary(svyglm(QN27 ~ QN17, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN18 <- summary(svyglm(QN27 ~ QN18, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN19 <- summary(svyglm(QN27 ~ QN19, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN20 <- summary(svyglm(QN27 ~ QN20, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN21 <- summary(svyglm(QN27 ~ QN21, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN22 <- summary(svyglm(QN27 ~ QN22, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN23 <- summary(svyglm(QN27 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN24 <- summary(svyglm(QN27 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN25 <- summary(svyglm(QN27 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN30 <- summary(svyglm(QN27 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN31 <- summary(svyglm(QN27 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN32 <- summary(svyglm(QN27 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN33 <- summary(svyglm(QN27 ~ QN33, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN34 <- summary(svyglm(QN27 ~ QN34, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN35 <- summary(svyglm(QN27 ~ QN35, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN36 <- summary(svyglm(QN27 ~ QN36, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN37 <- summary(svyglm(QN27 ~ QN37, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN38 <- summary(svyglm(QN27 ~ QN38, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN39 <- summary(svyglm(QN27 ~ QN39, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN40 <- summary(svyglm(QN27 ~ QN40, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN41 <- summary(svyglm(QN27 ~ QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN42 <- summary(svyglm(QN27 ~ QN42, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN43 <- summary(svyglm(QN27 ~ QN43, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN44 <- summary(svyglm(QN27 ~ QN44, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN45 <- summary(svyglm(QN27 ~ QN45, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN46 <- summary(svyglm(QN27 ~ QN46, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN47 <- summary(svyglm(QN27 ~ QN47, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN48 <- summary(svyglm(QN27 ~ QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN49 <- summary(svyglm(QN27 ~ QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN50 <- summary(svyglm(QN27 ~ QN50, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN51 <- summary(svyglm(QN27 ~ QN51, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN52 <- summary(svyglm(QN27 ~ QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN53 <- summary(svyglm(QN27 ~ QN53, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN54 <- summary(svyglm(QN27 ~ QN54, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN55 <- summary(svyglm(QN27 ~ QN55, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN56 <- summary(svyglm(QN27 ~ QN56, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN57 <- summary(svyglm(QN27 ~ QN57, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN58 <- summary(svyglm(QN27 ~ QN58, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN59 <- summary(svyglm(QN27 ~ QN59, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN60 <- summary(svyglm(QN27 ~ QN60, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN61 <- summary(svyglm(QN27 ~ QN61, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN62 <- summary(svyglm(QN27 ~ QN62, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN63 <- summary(svyglm(QN27 ~ QN63, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN64 <- summary(svyglm(QN27 ~ QN64, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN67 <- summary(svyglm(QN27 ~ QN67, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN68 <- summary(svyglm(QN27 ~ QN68, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN69 <- summary(svyglm(QN27 ~ QN69, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN70 <- summary(svyglm(QN27 ~ QN70, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN71 <- summary(svyglm(QN27 ~ QN71, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN72 <- summary(svyglm(QN27 ~ QN72, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN73 <- summary(svyglm(QN27 ~ QN73, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN74 <- summary(svyglm(QN27 ~ QN74, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN75 <- summary(svyglm(QN27 ~ QN75, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN76 <- summary(svyglm(QN27 ~ QN76, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN77 <- summary(svyglm(QN27 ~ QN77, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN78 <- summary(svyglm(QN27 ~ QN78, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN79 <- summary(svyglm(QN27 ~ QN79, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN80 <- summary(svyglm(QN27 ~ QN80, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN81 <- summary(svyglm(QN27 ~ QN81, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN82 <- summary(svyglm(QN27 ~ QN82, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN83 <- summary(svyglm(QN27 ~ QN83, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN84 <- summary(svyglm(QN27 ~ QN84, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN85 <- summary(svyglm(QN27 ~ QN85, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN86 <- summary(svyglm(QN27 ~ QN86, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN87 <- summary(svyglm(QN27 ~ QN87, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN88 <- summary(svyglm(QN27 ~ QN88, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN89 <- summary(svyglm(QN27 ~ QN89, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN90 <- summary(svyglm(QN27 ~ QN90, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN91 <- summary(svyglm(QN27 ~ QN91, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN92 <- summary(svyglm(QN27 ~ QN92, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN93 <- summary(svyglm(QN27 ~ QN93, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN94 <- summary(svyglm(QN27 ~ QN94, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN95 <- summary(svyglm(QN27 ~ QN95, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN96 <- summary(svyglm(QN27 ~ QN96, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN97 <- summary(svyglm(QN27 ~ QN97, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN98 <- summary(svyglm(QN27 ~ QN98, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN99 <- summary(svyglm(QN27 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+QN27_table <- data.frame(
+  Variable = c(8:25, 30:64, 67:99),
+  QN27_p.val = rbind(
+    QN27.svy.QN8$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN9$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN10$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN11$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN12$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN13$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN14$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN15$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN16$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN17$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN18$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN19$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN20$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN21$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN22$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN23$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN24$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN25$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN30$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN31$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN32$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN33$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN34$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN35$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN36$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN37$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN38$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN39$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN40$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN41$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN42$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN43$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN44$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN45$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN46$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN47$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN48$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN49$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN50$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN51$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN52$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN53$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN54$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN55$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN56$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN57$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN58$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN59$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN60$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN61$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN62$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN63$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN64$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN67$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN68$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN69$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN70$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN71$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN72$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN73$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN74$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN75$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN76$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN77$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN78$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN79$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN80$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN81$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN82$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN83$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN84$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN85$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN86$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN87$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN88$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN89$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN90$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN91$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN92$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN93$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN94$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN95$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN96$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN97$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN98$coef[-1, "Pr(>|t|)"],
+    QN27.svy.QN99$coef[-1, "Pr(>|t|)"]
+  )
+)
+
+QN27_order <- QN27_table %>%
+  filter(QN27_p.val <= 0.05) %>%
+  arrange(QN27_p.val)
+
+QN27_order
+``` 
+```{r}
+#final model
+summary(svyglm(QN27 ~ QN25+QN23+QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+#QN25: Felt sad or hopeless (Sad or hopeless)
+#QN23: Were bullied on school property (Bullying at school)
+#QN24: Were electronically bullied (Electronic bullying)
+```
+
+## QN28
+
+```{r}
+part1 <- c()
+for (i in 1:18){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df1 <- data.frame(value = part1) %>% na.omit()
+}
+
+part2 <- c()
+for (i in 23:57){
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df2 <- data.frame(value = part2) %>% na.omit()
+}
+
+part3 <- c()
+for (i in 60:92){
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df3 <- data.frame(value = part3) %>% na.omit()
+}
+
+df_28 <- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+df_28 %>%
+  arrange(value)
+```
+
+```{r}
+QN28.svy.QN8 <- summary(svyglm(QN28 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN9 <- summary(svyglm(QN28 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN10 <- summary(svyglm(QN28 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN11 <- summary(svyglm(QN28 ~ QN11, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN12 <- summary(svyglm(QN28 ~ QN12, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN13 <- summary(svyglm(QN28 ~ QN13, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN14 <- summary(svyglm(QN28 ~ QN14, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN15 <- summary(svyglm(QN28 ~ QN15, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN16 <- summary(svyglm(QN28 ~ QN16, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN17 <- summary(svyglm(QN28 ~ QN17, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN18 <- summary(svyglm(QN28 ~ QN18, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN19 <- summary(svyglm(QN28 ~ QN19, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN20 <- summary(svyglm(QN28 ~ QN20, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN21 <- summary(svyglm(QN28 ~ QN21, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN22 <- summary(svyglm(QN28 ~ QN22, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN23 <- summary(svyglm(QN28 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN24 <- summary(svyglm(QN28 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN25 <- summary(svyglm(QN28 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN30 <- summary(svyglm(QN28 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN31 <- summary(svyglm(QN28 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN32 <- summary(svyglm(QN28 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN33 <- summary(svyglm(QN28 ~ QN33, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN34 <- summary(svyglm(QN28 ~ QN34, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN35 <- summary(svyglm(QN28 ~ QN35, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN36 <- summary(svyglm(QN28 ~ QN36, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN37 <- summary(svyglm(QN28 ~ QN37, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN38 <- summary(svyglm(QN28 ~ QN38, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN39 <- summary(svyglm(QN28 ~ QN39, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN40 <- summary(svyglm(QN28 ~ QN40, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN41 <- summary(svyglm(QN28 ~ QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN42 <- summary(svyglm(QN28 ~ QN42, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN43 <- summary(svyglm(QN28 ~ QN43, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN44 <- summary(svyglm(QN28 ~ QN44, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN45 <- summary(svyglm(QN28 ~ QN45, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN46 <- summary(svyglm(QN28 ~ QN46, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN47 <- summary(svyglm(QN28 ~ QN47, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN48 <- summary(svyglm(QN28 ~ QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN49 <- summary(svyglm(QN28 ~ QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN50 <- summary(svyglm(QN28 ~ QN50, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN51 <- summary(svyglm(QN28 ~ QN51, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN52 <- summary(svyglm(QN28 ~ QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN53 <- summary(svyglm(QN28 ~ QN53, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN54 <- summary(svyglm(QN28 ~ QN54, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN55 <- summary(svyglm(QN28 ~ QN55, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN56 <- summary(svyglm(QN28 ~ QN56, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN57 <- summary(svyglm(QN28 ~ QN57, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN58 <- summary(svyglm(QN28 ~ QN58, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN59 <- summary(svyglm(QN28 ~ QN59, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN60 <- summary(svyglm(QN28 ~ QN60, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN61 <- summary(svyglm(QN28 ~ QN61, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN62 <- summary(svyglm(QN28 ~ QN62, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN63 <- summary(svyglm(QN28 ~ QN63, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN64 <- summary(svyglm(QN28 ~ QN64, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN67 <- summary(svyglm(QN28 ~ QN67, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN68 <- summary(svyglm(QN28 ~ QN68, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN69 <- summary(svyglm(QN28 ~ QN69, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN70 <- summary(svyglm(QN28 ~ QN70, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN71 <- summary(svyglm(QN28 ~ QN71, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN72 <- summary(svyglm(QN28 ~ QN72, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN73 <- summary(svyglm(QN28 ~ QN73, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN74 <- summary(svyglm(QN28 ~ QN74, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN75 <- summary(svyglm(QN28 ~ QN75, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN76 <- summary(svyglm(QN28 ~ QN76, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN77 <- summary(svyglm(QN28 ~ QN77, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN78 <- summary(svyglm(QN28 ~ QN78, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN79 <- summary(svyglm(QN28 ~ QN79, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN80 <- summary(svyglm(QN28 ~ QN80, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN81 <- summary(svyglm(QN28 ~ QN81, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN82 <- summary(svyglm(QN28 ~ QN82, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN83 <- summary(svyglm(QN28 ~ QN83, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN84 <- summary(svyglm(QN28 ~ QN84, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN85 <- summary(svyglm(QN28 ~ QN85, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN86 <- summary(svyglm(QN28 ~ QN86, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN87 <- summary(svyglm(QN28 ~ QN87, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN88 <- summary(svyglm(QN28 ~ QN88, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN89 <- summary(svyglm(QN28 ~ QN89, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN90 <- summary(svyglm(QN28 ~ QN90, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN91 <- summary(svyglm(QN28 ~ QN91, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN92 <- summary(svyglm(QN28 ~ QN92, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN93 <- summary(svyglm(QN28 ~ QN93, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN94 <- summary(svyglm(QN28 ~ QN94, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN95 <- summary(svyglm(QN28 ~ QN95, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN96 <- summary(svyglm(QN28 ~ QN96, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN97 <- summary(svyglm(QN28 ~ QN97, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN98 <- summary(svyglm(QN28 ~ QN98, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN99 <- summary(svyglm(QN28 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+QN28_table <- data.frame(
+  Variable = c(8:25, 30:64, 67:99),
+  QN28_p.val = rbind(
+    QN28.svy.QN8$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN9$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN10$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN11$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN12$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN13$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN14$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN15$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN16$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN17$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN18$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN19$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN20$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN21$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN22$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN23$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN24$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN25$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN30$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN31$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN32$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN33$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN34$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN35$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN36$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN37$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN38$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN39$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN40$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN41$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN42$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN43$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN44$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN45$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN46$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN47$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN48$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN49$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN50$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN51$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN52$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN53$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN54$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN55$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN56$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN57$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN58$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN59$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN60$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN61$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN62$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN63$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN64$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN67$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN68$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN69$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN70$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN71$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN72$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN73$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN74$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN75$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN76$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN77$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN78$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN79$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN80$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN81$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN82$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN83$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN84$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN85$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN86$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN87$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN88$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN89$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN90$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN91$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN92$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN93$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN94$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN95$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN96$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN97$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN98$coef[-1, "Pr(>|t|)"],
+    QN28.svy.QN99$coef[-1, "Pr(>|t|)"]
+  )
+)
+
+QN28_order <- QN28_table %>%
+  filter(QN28_p.val <= 0.05) %>%
+  arrange(QN28_p.val)
+
+QN28_order
+``` 
+
+```{r}
+#final model
+summary(svyglm(QN28 ~ QN23+QN25+QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+#QN23: Were bullied on school property (Bullying at school)
+#QN25: Felt sad or hopeless (Sad or hopeless)
+#QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use )
 ```
 
 
+## QN29
+
+```{r}
+part1 <- c()
+for (i in 1:18){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df1 <- data.frame(value = part1) %>% na.omit()
+}
+
+part2 <- c()
+for (i in 23:57){
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df2 <- data.frame(value = part2) %>% na.omit()
+}
+
+part3 <- c()
+for (i in 60:92){
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df3 <- data.frame(value = part3) %>% na.omit()
+}
+
+df_29 <- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+df_29 %>%
+  arrange(value)
+```
+
+```{r}
+QN29.svy.QN8 <- summary(svyglm(QN29 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN9 <- summary(svyglm(QN29 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN10 <- summary(svyglm(QN29 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN11 <- summary(svyglm(QN29 ~ QN11, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN12 <- summary(svyglm(QN29 ~ QN12, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN13 <- summary(svyglm(QN29 ~ QN13, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN14 <- summary(svyglm(QN29 ~ QN14, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN15 <- summary(svyglm(QN29 ~ QN15, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN16 <- summary(svyglm(QN29 ~ QN16, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN17 <- summary(svyglm(QN29 ~ QN17, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN18 <- summary(svyglm(QN29 ~ QN18, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN19 <- summary(svyglm(QN29 ~ QN19, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN20 <- summary(svyglm(QN29 ~ QN20, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN21 <- summary(svyglm(QN29 ~ QN21, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN22 <- summary(svyglm(QN29 ~ QN22, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN23 <- summary(svyglm(QN29 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN24 <- summary(svyglm(QN29 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN25 <- summary(svyglm(QN29 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN30 <- summary(svyglm(QN29 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN31 <- summary(svyglm(QN29 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN32 <- summary(svyglm(QN29 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN33 <- summary(svyglm(QN29 ~ QN33, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN34 <- summary(svyglm(QN29 ~ QN34, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN35 <- summary(svyglm(QN29 ~ QN35, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN36 <- summary(svyglm(QN29 ~ QN36, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN37 <- summary(svyglm(QN29 ~ QN37, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN38 <- summary(svyglm(QN29 ~ QN38, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN39 <- summary(svyglm(QN29 ~ QN39, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN40 <- summary(svyglm(QN29 ~ QN40, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN41 <- summary(svyglm(QN29 ~ QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN42 <- summary(svyglm(QN29 ~ QN42, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN43 <- summary(svyglm(QN29 ~ QN43, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN44 <- summary(svyglm(QN29 ~ QN44, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN45 <- summary(svyglm(QN29 ~ QN45, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN46 <- summary(svyglm(QN29 ~ QN46, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN47 <- summary(svyglm(QN29 ~ QN47, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN48 <- summary(svyglm(QN29 ~ QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN49 <- summary(svyglm(QN29 ~ QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN50 <- summary(svyglm(QN29 ~ QN50, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN51 <- summary(svyglm(QN29 ~ QN51, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN52 <- summary(svyglm(QN29 ~ QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN53 <- summary(svyglm(QN29 ~ QN53, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN54 <- summary(svyglm(QN29 ~ QN54, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN55 <- summary(svyglm(QN29 ~ QN55, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN56 <- summary(svyglm(QN29 ~ QN56, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN57 <- summary(svyglm(QN29 ~ QN57, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN58 <- summary(svyglm(QN29 ~ QN58, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN59 <- summary(svyglm(QN29 ~ QN59, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN60 <- summary(svyglm(QN29 ~ QN60, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN61 <- summary(svyglm(QN29 ~ QN61, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN62 <- summary(svyglm(QN29 ~ QN62, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN63 <- summary(svyglm(QN29 ~ QN63, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN64 <- summary(svyglm(QN29 ~ QN64, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN67 <- summary(svyglm(QN29 ~ QN67, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN68 <- summary(svyglm(QN29 ~ QN68, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN69 <- summary(svyglm(QN29 ~ QN69, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN70 <- summary(svyglm(QN29 ~ QN70, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN71 <- summary(svyglm(QN29 ~ QN71, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN72 <- summary(svyglm(QN29 ~ QN72, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN73 <- summary(svyglm(QN29 ~ QN73, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN74 <- summary(svyglm(QN29 ~ QN74, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN75 <- summary(svyglm(QN29 ~ QN75, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN76 <- summary(svyglm(QN29 ~ QN76, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN77 <- summary(svyglm(QN29 ~ QN77, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN78 <- summary(svyglm(QN29 ~ QN78, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN79 <- summary(svyglm(QN29 ~ QN79, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN80 <- summary(svyglm(QN29 ~ QN80, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN81 <- summary(svyglm(QN29 ~ QN81, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN82 <- summary(svyglm(QN29 ~ QN82, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN83 <- summary(svyglm(QN29 ~ QN83, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN84 <- summary(svyglm(QN29 ~ QN84, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN85 <- summary(svyglm(QN29 ~ QN85, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN86 <- summary(svyglm(QN29 ~ QN86, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN87 <- summary(svyglm(QN29 ~ QN87, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN88 <- summary(svyglm(QN29 ~ QN88, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN89 <- summary(svyglm(QN29 ~ QN89, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN90 <- summary(svyglm(QN29 ~ QN90, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN91 <- summary(svyglm(QN29 ~ QN91, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN92 <- summary(svyglm(QN29 ~ QN92, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN93 <- summary(svyglm(QN29 ~ QN93, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN94 <- summary(svyglm(QN29 ~ QN94, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN95 <- summary(svyglm(QN29 ~ QN95, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN96 <- summary(svyglm(QN29 ~ QN96, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN97 <- summary(svyglm(QN29 ~ QN97, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN98 <- summary(svyglm(QN29 ~ QN98, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN99 <- summary(svyglm(QN29 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+QN29_table <- data.frame(
+  Variable = c(8:25, 30:64, 67:99),
+  QN29_p.val = rbind(
+    QN29.svy.QN8$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN9$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN10$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN11$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN12$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN13$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN14$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN15$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN16$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN17$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN18$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN19$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN20$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN21$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN22$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN23$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN24$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN25$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN30$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN31$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN32$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN33$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN34$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN35$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN36$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN37$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN38$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN39$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN40$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN41$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN42$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN43$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN44$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN45$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN46$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN47$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN48$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN49$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN50$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN51$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN52$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN53$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN54$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN55$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN56$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN57$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN58$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN59$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN60$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN61$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN62$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN63$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN64$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN67$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN68$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN69$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN70$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN71$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN72$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN73$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN74$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN75$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN76$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN77$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN78$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN79$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN80$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN81$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN82$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN83$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN84$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN85$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN86$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN87$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN88$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN89$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN90$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN91$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN92$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN93$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN94$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN95$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN96$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN97$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN98$coef[-1, "Pr(>|t|)"],
+    QN29.svy.QN99$coef[-1, "Pr(>|t|)"]
+  )
+)
+
+QN29_order <- QN29_table %>%
+  filter(QN29_p.val <= 0.05) %>%
+  arrange(QN29_p.val)
+
+QN29_order
+``` 
+
+```{r}
+#final model
+summary(svyglm(QN29 ~ QN69+QN50+QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+#QN69: Did not drink fruit juice (Fruit juice drinking)
+#QN50: Ever used cocaine 
+#QN52: Ever heroin use
+#**QN53: Ever used methamphetamines 
+```
