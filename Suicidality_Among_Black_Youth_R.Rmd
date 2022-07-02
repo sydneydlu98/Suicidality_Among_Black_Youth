@@ -288,7 +288,7 @@ summary(svyglm(QN26 ~ QN25+QN24+QN23+QN41+QN49, data = black_data, design = yrbs
 #QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use)
 ```
 
-## QN27
+# QN27
 
 ```{r}
 part1 <- c()
@@ -509,7 +509,7 @@ summary(svyglm(QN27 ~ QN25+QN23+QN24, data = black_data, design = yrbsdes, famil
 #QN24: Were electronically bullied (Electronic bullying)
 ```
 
-## QN28
+# QN28
 
 ```{r}
 part1 <- c()
@@ -732,7 +732,7 @@ summary(svyglm(QN28 ~ QN23+QN25+QN49, data = black_data, design = yrbsdes, famil
 ```
 
 
-## QN29
+# QN29
 
 ```{r}
 part1 <- c()

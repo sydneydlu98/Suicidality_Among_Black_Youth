@@ -2828,6 +2828,32 @@ yrbsdes &lt;- svydesign(id=~PSU,
 </div>
 <div id="qn26" class="section level1">
 <h1>QN26</h1>
+<pre class="r"><code>part1 &lt;- c()
+for (i in 1:18){
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
+}
+
+part2 &lt;- c()
+for (i in 23:57){
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
+}
+
+part3 &lt;- c()
+for (i in 60:92){
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
+}
+
+df_26 &lt;- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+df_26 %&gt;%
+  arrange(value)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"25","2":"2.977403e-15"},{"1":"24","2":"2.576808e-11"},{"1":"23","2":"1.011992e-08"},{"1":"41","2":"2.317034e-08"},{"1":"49","2":"9.386844e-08"},{"1":"53","2":"2.327675e-07"},{"1":"48","2":"2.705705e-07"},{"1":"20","2":"5.962462e-07"},{"1":"50","2":"1.358843e-06"},{"1":"22","2":"4.833263e-06"},{"1":"98","2":"1.507563e-05"},{"1":"90","2":"2.009191e-05"},{"1":"52","2":"2.010981e-05"},{"1":"57","2":"2.359048e-05"},{"1":"34","2":"2.572300e-05"},{"1":"54","2":"3.663932e-05"},{"1":"38","2":"4.531321e-05"},{"1":"37","2":"4.845079e-05"},{"1":"35","2":"6.695249e-05"},{"1":"15","2":"6.782858e-05"},{"1":"51","2":"9.429505e-05"},{"1":"91","2":"1.006547e-04"},{"1":"45","2":"1.470510e-04"},{"1":"32","2":"1.532918e-04"},{"1":"56","2":"1.572156e-04"},{"1":"19","2":"2.446177e-04"},{"1":"55","2":"5.327581e-04"},{"1":"40","2":"5.929414e-04"},{"1":"16","2":"1.107396e-03"},{"1":"42","2":"1.295507e-03"},{"1":"13","2":"1.364127e-03"},{"1":"83","2":"1.380576e-03"},{"1":"75","2":"1.616156e-03"},{"1":"47","2":"3.004348e-03"},{"1":"88","2":"7.345584e-03"},{"1":"31","2":"9.026564e-03"},{"1":"68","2":"9.346153e-03"},{"1":"21","2":"1.001325e-02"},{"1":"10","2":"1.106563e-02"},{"1":"94","2":"1.127680e-02"},{"1":"60","2":"1.409022e-02"},{"1":"67","2":"1.585844e-02"},{"1":"85","2":"3.425681e-02"},{"1":"18","2":"3.588106e-02"},{"1":"46","2":"4.472807e-02"},{"1":"92","2":"5.002706e-02"},{"1":"12","2":"5.973505e-02"},{"1":"30","2":"6.842052e-02"},{"1":"36","2":"7.256157e-02"},{"1":"71","2":"7.533880e-02"},{"1":"63","2":"8.866974e-02"},{"1":"62","2":"9.070075e-02"},{"1":"69","2":"1.014630e-01"},{"1":"61","2":"1.050403e-01"},{"1":"9","2":"1.064976e-01"},{"1":"95","2":"1.187682e-01"},{"1":"39","2":"1.304749e-01"},{"1":"86","2":"1.513751e-01"},{"1":"59","2":"2.157653e-01"},{"1":"96","2":"2.285053e-01"},{"1":"64","2":"2.919213e-01"},{"1":"44","2":"3.172214e-01"},{"1":"82","2":"3.292548e-01"},{"1":"76","2":"3.428081e-01"},{"1":"58","2":"3.490899e-01"},{"1":"14","2":"3.682505e-01"},{"1":"8","2":"3.917876e-01"},{"1":"33","2":"4.096341e-01"},{"1":"11","2":"4.312840e-01"},{"1":"93","2":"4.763564e-01"},{"1":"73","2":"4.770822e-01"},{"1":"43","2":"5.253269e-01"},{"1":"78","2":"5.804887e-01"},{"1":"97","2":"6.048953e-01"},{"1":"87","2":"6.062277e-01"},{"1":"80","2":"6.215171e-01"},{"1":"17","2":"6.326606e-01"},{"1":"70","2":"6.589339e-01"},{"1":"84","2":"7.355973e-01"},{"1":"74","2":"7.366184e-01"},{"1":"72","2":"8.056758e-01"},{"1":"79","2":"8.507023e-01"},{"1":"89","2":"8.528172e-01"},{"1":"99","2":"8.587997e-01"},{"1":"77","2":"9.135534e-01"},{"1":"81","2":"9.847614e-01"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
 <pre class="r"><code>QN26.svy.QN8 &lt;- summary(svyglm(QN26 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN9 &lt;- summary(svyglm(QN26 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN10 &lt;- summary(svyglm(QN26 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
@@ -2846,9 +2872,6 @@ QN26.svy.QN22 &lt;- summary(svyglm(QN26 ~ QN22, data = black_data, design = yrbs
 QN26.svy.QN23 &lt;- summary(svyglm(QN26 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN24 &lt;- summary(svyglm(QN26 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN25 &lt;- summary(svyglm(QN26 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
-QN26.svy.QN27 &lt;- summary(svyglm(QN26 ~ QN27, data = black_data, design = yrbsdes, family = quasibinomial()))
-QN26.svy.QN28 &lt;- summary(svyglm(QN26 ~ QN28, data = black_data, design = yrbsdes, family = quasibinomial()))
-QN26.svy.QN29 &lt;- summary(svyglm(QN26 ~ QN29, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN30 &lt;- summary(svyglm(QN26 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN31 &lt;- summary(svyglm(QN26 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
 QN26.svy.QN32 &lt;- summary(svyglm(QN26 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
@@ -2919,7 +2942,7 @@ QN26.svy.QN98 &lt;- summary(svyglm(QN26 ~ QN98, data = black_data, design = yrbs
 QN26.svy.QN99 &lt;- summary(svyglm(QN26 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
 
 QN26_table &lt;- data.frame(
-  Variable = c(8:25, 27:64, 67:99),
+  Variable = c(8:25, 30:64, 67:99),
   QN26_p.val = rbind(
     QN26.svy.QN8$coef[-1, &quot;Pr(&gt;|t|)&quot;],
     QN26.svy.QN9$coef[-1, &quot;Pr(&gt;|t|)&quot;],
@@ -2939,9 +2962,6 @@ QN26_table &lt;- data.frame(
     QN26.svy.QN23$coef[-1, &quot;Pr(&gt;|t|)&quot;],
     QN26.svy.QN24$coef[-1, &quot;Pr(&gt;|t|)&quot;],
     QN26.svy.QN25$coef[-1, &quot;Pr(&gt;|t|)&quot;],
-    QN26.svy.QN27$coef[-1, &quot;Pr(&gt;|t|)&quot;],
-    QN26.svy.QN28$coef[-1, &quot;Pr(&gt;|t|)&quot;],
-    QN26.svy.QN29$coef[-1, &quot;Pr(&gt;|t|)&quot;],
     QN26.svy.QN30$coef[-1, &quot;Pr(&gt;|t|)&quot;],
     QN26.svy.QN31$coef[-1, &quot;Pr(&gt;|t|)&quot;],
     QN26.svy.QN32$coef[-1, &quot;Pr(&gt;|t|)&quot;],
@@ -3020,40 +3040,772 @@ QN26_order &lt;- QN26_table %&gt;%
 QN26_order</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["QN26_p.val"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"27","2":"5.616678e-53"},{"1":"28","2":"2.450631e-50"},{"1":"29","2":"1.519046e-38"},{"1":"25","2":"2.977403e-15"},{"1":"24","2":"2.576808e-11"},{"1":"23","2":"1.011992e-08"},{"1":"41","2":"2.317034e-08"},{"1":"49","2":"9.386844e-08"},{"1":"53","2":"2.327675e-07"},{"1":"48","2":"2.705705e-07"},{"1":"20","2":"5.962462e-07"},{"1":"50","2":"1.358843e-06"},{"1":"22","2":"4.833263e-06"},{"1":"98","2":"1.507563e-05"},{"1":"90","2":"2.009191e-05"},{"1":"52","2":"2.010981e-05"},{"1":"57","2":"2.359048e-05"},{"1":"34","2":"2.572300e-05"},{"1":"54","2":"3.663932e-05"},{"1":"38","2":"4.531321e-05"},{"1":"37","2":"4.845079e-05"},{"1":"35","2":"6.695249e-05"},{"1":"15","2":"6.782858e-05"},{"1":"51","2":"9.429505e-05"},{"1":"91","2":"1.006547e-04"},{"1":"45","2":"1.470510e-04"},{"1":"32","2":"1.532918e-04"},{"1":"56","2":"1.572156e-04"},{"1":"19","2":"2.446177e-04"},{"1":"55","2":"5.327581e-04"},{"1":"40","2":"5.929414e-04"},{"1":"16","2":"1.107396e-03"},{"1":"42","2":"1.295507e-03"},{"1":"13","2":"1.364127e-03"},{"1":"83","2":"1.380576e-03"},{"1":"75","2":"1.616156e-03"},{"1":"47","2":"3.004348e-03"},{"1":"88","2":"7.345584e-03"},{"1":"31","2":"9.026564e-03"},{"1":"68","2":"9.346153e-03"},{"1":"21","2":"1.001325e-02"},{"1":"10","2":"1.106563e-02"},{"1":"94","2":"1.127680e-02"},{"1":"60","2":"1.409022e-02"},{"1":"67","2":"1.585844e-02"},{"1":"85","2":"3.425681e-02"},{"1":"18","2":"3.588106e-02"},{"1":"46","2":"4.472807e-02"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["QN26_p.val"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"25","2":"2.977403e-15"},{"1":"24","2":"2.576808e-11"},{"1":"23","2":"1.011992e-08"},{"1":"41","2":"2.317034e-08"},{"1":"49","2":"9.386844e-08"},{"1":"53","2":"2.327675e-07"},{"1":"48","2":"2.705705e-07"},{"1":"20","2":"5.962462e-07"},{"1":"50","2":"1.358843e-06"},{"1":"22","2":"4.833263e-06"},{"1":"98","2":"1.507563e-05"},{"1":"90","2":"2.009191e-05"},{"1":"52","2":"2.010981e-05"},{"1":"57","2":"2.359048e-05"},{"1":"34","2":"2.572300e-05"},{"1":"54","2":"3.663932e-05"},{"1":"38","2":"4.531321e-05"},{"1":"37","2":"4.845079e-05"},{"1":"35","2":"6.695249e-05"},{"1":"15","2":"6.782858e-05"},{"1":"51","2":"9.429505e-05"},{"1":"91","2":"1.006547e-04"},{"1":"45","2":"1.470510e-04"},{"1":"32","2":"1.532918e-04"},{"1":"56","2":"1.572156e-04"},{"1":"19","2":"2.446177e-04"},{"1":"55","2":"5.327581e-04"},{"1":"40","2":"5.929414e-04"},{"1":"16","2":"1.107396e-03"},{"1":"42","2":"1.295507e-03"},{"1":"13","2":"1.364127e-03"},{"1":"83","2":"1.380576e-03"},{"1":"75","2":"1.616156e-03"},{"1":"47","2":"3.004348e-03"},{"1":"88","2":"7.345584e-03"},{"1":"31","2":"9.026564e-03"},{"1":"68","2":"9.346153e-03"},{"1":"21","2":"1.001325e-02"},{"1":"10","2":"1.106563e-02"},{"1":"94","2":"1.127680e-02"},{"1":"60","2":"1.409022e-02"},{"1":"67","2":"1.585844e-02"},{"1":"85","2":"3.425681e-02"},{"1":"18","2":"3.588106e-02"},{"1":"46","2":"4.472807e-02"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<pre class="r"><code>#forward selection
-summary(svyglm(QN26 ~ QN27+QN28+QN29+QN25+QN24+QN23+QN41+QN49+QN53+QN48, data = black_data, design = yrbsdes, family = quasibinomial()))</code></pre>
+<pre class="r"><code>#final model
+summary(svyglm(QN26 ~ QN25+QN24+QN23+QN41+QN49, data = black_data, design = yrbsdes, family = quasibinomial()))</code></pre>
 <pre><code>## 
 ## Call:
-## svyglm(formula = QN26 ~ QN27 + QN28 + QN29 + QN25 + QN24 + QN23 + 
-##     QN41 + QN49 + QN53 + QN48, design = yrbsdes, family = quasibinomial(), 
-##     data = black_data)
+## svyglm(formula = QN26 ~ QN25 + QN24 + QN23 + QN41 + QN49, design = yrbsdes, 
+##     family = quasibinomial(), data = black_data)
 ## 
 ## Survey design:
 ## svydesign(id = ~PSU, weight = ~WEIGHT, strata = ~STRATUM, data = black_data, 
 ##     nest = TRUE)
 ## 
 ## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -47.63077    2.13978 -22.260  &lt; 2e-16 ***
-## QN27         22.85307    0.53278  42.894  &lt; 2e-16 ***
-## QN28         22.19472    0.56142  39.533  &lt; 2e-16 ***
-## QN29         -2.83998    0.84529  -3.360  0.00251 ** 
-## QN25          2.17103    0.41589   5.220 2.11e-05 ***
-## QN24         -0.55413    0.77887  -0.711  0.48339    
-## QN23          1.11046    0.68708   1.616  0.11860    
-## QN41         -0.89194    0.59134  -1.508  0.14400    
-## QN49          0.49148    0.45846   1.072  0.29395    
-## QN53          2.72565    0.83849   3.251  0.00328 ** 
-## QN48         -0.07341    0.57575  -0.128  0.89956    
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -5.7288     0.7924  -7.230 4.78e-08 ***
+## QN25          2.1049     0.2064  10.199 2.89e-11 ***
+## QN24          0.7902     0.3044   2.596   0.0145 *  
+## QN23          0.5883     0.3425   1.718   0.0961 .  
+## QN41          0.3756     0.1938   1.938   0.0621 .  
+## QN49          0.5394     0.2547   2.118   0.0426 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for quasibinomial family taken to be 1.029978)
+## (Dispersion parameter for quasibinomial family taken to be 0.99457)
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>#QN25: Felt sad or hopeless (Sad or hopeless)
+#QN24: Were electronically bullied (Electronic bullying)
+#QN23: Were bullied on school property (Bullying at school)
+#QN41: Current alcohol use; Dependence: Required by QN44
+#QN49: Ever took prescription pain medicine without a doctor&#39;s prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use)</code></pre>
+</div>
+<div id="qn27" class="section level1">
+<h1>QN27</h1>
+<pre class="r"><code>part1 &lt;- c()
+for (i in 1:18){
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
+}
+
+part2 &lt;- c()
+for (i in 23:57){
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
+}
+
+part3 &lt;- c()
+for (i in 60:92){
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
+}
+
+df_27 &lt;- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+df_27 %&gt;%
+  arrange(value)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"25","2":"4.523651e-12"},{"1":"23","2":"5.237149e-10"},{"1":"24","2":"9.433278e-10"},{"1":"90","2":"3.626511e-06"},{"1":"41","2":"6.325955e-06"},{"1":"49","2":"1.313639e-05"},{"1":"20","2":"1.467620e-05"},{"1":"48","2":"1.806474e-05"},{"1":"57","2":"1.916554e-05"},{"1":"50","2":"2.258513e-05"},{"1":"22","2":"2.790399e-05"},{"1":"32","2":"5.370091e-05"},{"1":"98","2":"1.223256e-04"},{"1":"19","2":"4.752037e-04"},{"1":"55","2":"6.677534e-04"},{"1":"45","2":"7.101202e-04"},{"1":"13","2":"8.772764e-04"},{"1":"83","2":"1.281379e-03"},{"1":"34","2":"1.439357e-03"},{"1":"15","2":"1.740344e-03"},{"1":"35","2":"1.886721e-03"},{"1":"42","2":"3.395849e-03"},{"1":"38","2":"3.484816e-03"},{"1":"37","2":"3.807956e-03"},{"1":"68","2":"3.898576e-03"},{"1":"56","2":"4.677068e-03"},{"1":"31","2":"4.943430e-03"},{"1":"40","2":"5.071405e-03"},{"1":"60","2":"5.177465e-03"},{"1":"51","2":"5.471845e-03"},{"1":"47","2":"1.046182e-02"},{"1":"53","2":"1.053454e-02"},{"1":"10","2":"1.129141e-02"},{"1":"21","2":"1.225273e-02"},{"1":"62","2":"1.613612e-02"},{"1":"63","2":"1.890116e-02"},{"1":"30","2":"2.137869e-02"},{"1":"52","2":"2.206590e-02"},{"1":"54","2":"3.060733e-02"},{"1":"88","2":"3.755247e-02"},{"1":"94","2":"4.001243e-02"},{"1":"61","2":"4.350982e-02"},{"1":"91","2":"4.452945e-02"},{"1":"16","2":"5.004561e-02"},{"1":"59","2":"5.328975e-02"},{"1":"12","2":"5.621012e-02"},{"1":"39","2":"5.627180e-02"},{"1":"46","2":"1.018341e-01"},{"1":"75","2":"1.047429e-01"},{"1":"9","2":"1.160017e-01"},{"1":"84","2":"1.354959e-01"},{"1":"67","2":"1.410904e-01"},{"1":"85","2":"1.446770e-01"},{"1":"14","2":"1.454575e-01"},{"1":"18","2":"1.592310e-01"},{"1":"71","2":"1.594508e-01"},{"1":"97","2":"1.622320e-01"},{"1":"11","2":"1.883642e-01"},{"1":"64","2":"2.004393e-01"},{"1":"36","2":"2.067960e-01"},{"1":"95","2":"2.334308e-01"},{"1":"96","2":"2.537113e-01"},{"1":"99","2":"2.793690e-01"},{"1":"76","2":"2.921360e-01"},{"1":"86","2":"2.968389e-01"},{"1":"87","2":"3.147402e-01"},{"1":"43","2":"3.266599e-01"},{"1":"73","2":"3.324011e-01"},{"1":"33","2":"3.347645e-01"},{"1":"74","2":"3.923703e-01"},{"1":"8","2":"4.026156e-01"},{"1":"72","2":"4.027399e-01"},{"1":"80","2":"4.586875e-01"},{"1":"78","2":"4.694441e-01"},{"1":"58","2":"4.809225e-01"},{"1":"82","2":"5.234627e-01"},{"1":"92","2":"5.592067e-01"},{"1":"44","2":"6.117429e-01"},{"1":"93","2":"6.560261e-01"},{"1":"77","2":"7.059780e-01"},{"1":"17","2":"7.937982e-01"},{"1":"81","2":"8.580647e-01"},{"1":"89","2":"9.294011e-01"},{"1":"69","2":"9.643635e-01"},{"1":"79","2":"9.811631e-01"},{"1":"70","2":"9.982758e-01"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>QN27.svy.QN8 &lt;- summary(svyglm(QN27 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN9 &lt;- summary(svyglm(QN27 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN10 &lt;- summary(svyglm(QN27 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN11 &lt;- summary(svyglm(QN27 ~ QN11, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN12 &lt;- summary(svyglm(QN27 ~ QN12, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN13 &lt;- summary(svyglm(QN27 ~ QN13, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN14 &lt;- summary(svyglm(QN27 ~ QN14, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN15 &lt;- summary(svyglm(QN27 ~ QN15, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN16 &lt;- summary(svyglm(QN27 ~ QN16, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN17 &lt;- summary(svyglm(QN27 ~ QN17, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN18 &lt;- summary(svyglm(QN27 ~ QN18, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN19 &lt;- summary(svyglm(QN27 ~ QN19, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN20 &lt;- summary(svyglm(QN27 ~ QN20, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN21 &lt;- summary(svyglm(QN27 ~ QN21, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN22 &lt;- summary(svyglm(QN27 ~ QN22, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN23 &lt;- summary(svyglm(QN27 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN24 &lt;- summary(svyglm(QN27 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN25 &lt;- summary(svyglm(QN27 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN30 &lt;- summary(svyglm(QN27 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN31 &lt;- summary(svyglm(QN27 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN32 &lt;- summary(svyglm(QN27 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN33 &lt;- summary(svyglm(QN27 ~ QN33, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN34 &lt;- summary(svyglm(QN27 ~ QN34, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN35 &lt;- summary(svyglm(QN27 ~ QN35, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN36 &lt;- summary(svyglm(QN27 ~ QN36, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN37 &lt;- summary(svyglm(QN27 ~ QN37, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN38 &lt;- summary(svyglm(QN27 ~ QN38, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN39 &lt;- summary(svyglm(QN27 ~ QN39, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN40 &lt;- summary(svyglm(QN27 ~ QN40, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN41 &lt;- summary(svyglm(QN27 ~ QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN42 &lt;- summary(svyglm(QN27 ~ QN42, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN43 &lt;- summary(svyglm(QN27 ~ QN43, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN44 &lt;- summary(svyglm(QN27 ~ QN44, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN45 &lt;- summary(svyglm(QN27 ~ QN45, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN46 &lt;- summary(svyglm(QN27 ~ QN46, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN47 &lt;- summary(svyglm(QN27 ~ QN47, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN48 &lt;- summary(svyglm(QN27 ~ QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN49 &lt;- summary(svyglm(QN27 ~ QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN50 &lt;- summary(svyglm(QN27 ~ QN50, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN51 &lt;- summary(svyglm(QN27 ~ QN51, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN52 &lt;- summary(svyglm(QN27 ~ QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN53 &lt;- summary(svyglm(QN27 ~ QN53, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN54 &lt;- summary(svyglm(QN27 ~ QN54, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN55 &lt;- summary(svyglm(QN27 ~ QN55, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN56 &lt;- summary(svyglm(QN27 ~ QN56, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN57 &lt;- summary(svyglm(QN27 ~ QN57, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN58 &lt;- summary(svyglm(QN27 ~ QN58, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN59 &lt;- summary(svyglm(QN27 ~ QN59, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN60 &lt;- summary(svyglm(QN27 ~ QN60, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN61 &lt;- summary(svyglm(QN27 ~ QN61, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN62 &lt;- summary(svyglm(QN27 ~ QN62, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN63 &lt;- summary(svyglm(QN27 ~ QN63, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN64 &lt;- summary(svyglm(QN27 ~ QN64, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN67 &lt;- summary(svyglm(QN27 ~ QN67, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN68 &lt;- summary(svyglm(QN27 ~ QN68, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN69 &lt;- summary(svyglm(QN27 ~ QN69, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN70 &lt;- summary(svyglm(QN27 ~ QN70, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN71 &lt;- summary(svyglm(QN27 ~ QN71, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN72 &lt;- summary(svyglm(QN27 ~ QN72, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN73 &lt;- summary(svyglm(QN27 ~ QN73, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN74 &lt;- summary(svyglm(QN27 ~ QN74, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN75 &lt;- summary(svyglm(QN27 ~ QN75, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN76 &lt;- summary(svyglm(QN27 ~ QN76, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN77 &lt;- summary(svyglm(QN27 ~ QN77, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN78 &lt;- summary(svyglm(QN27 ~ QN78, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN79 &lt;- summary(svyglm(QN27 ~ QN79, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN80 &lt;- summary(svyglm(QN27 ~ QN80, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN81 &lt;- summary(svyglm(QN27 ~ QN81, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN82 &lt;- summary(svyglm(QN27 ~ QN82, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN83 &lt;- summary(svyglm(QN27 ~ QN83, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN84 &lt;- summary(svyglm(QN27 ~ QN84, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN85 &lt;- summary(svyglm(QN27 ~ QN85, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN86 &lt;- summary(svyglm(QN27 ~ QN86, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN87 &lt;- summary(svyglm(QN27 ~ QN87, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN88 &lt;- summary(svyglm(QN27 ~ QN88, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN89 &lt;- summary(svyglm(QN27 ~ QN89, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN90 &lt;- summary(svyglm(QN27 ~ QN90, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN91 &lt;- summary(svyglm(QN27 ~ QN91, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN92 &lt;- summary(svyglm(QN27 ~ QN92, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN93 &lt;- summary(svyglm(QN27 ~ QN93, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN94 &lt;- summary(svyglm(QN27 ~ QN94, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN95 &lt;- summary(svyglm(QN27 ~ QN95, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN96 &lt;- summary(svyglm(QN27 ~ QN96, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN97 &lt;- summary(svyglm(QN27 ~ QN97, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN98 &lt;- summary(svyglm(QN27 ~ QN98, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27.svy.QN99 &lt;- summary(svyglm(QN27 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+QN27_table &lt;- data.frame(
+  Variable = c(8:25, 30:64, 67:99),
+  QN27_p.val = rbind(
+    QN27.svy.QN8$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN9$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN10$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN11$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN12$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN13$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN14$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN15$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN16$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN17$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN18$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN19$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN20$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN21$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN22$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN23$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN24$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN25$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN30$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN31$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN32$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN33$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN34$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN35$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN36$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN37$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN38$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN39$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN40$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN41$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN42$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN43$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN44$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN45$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN46$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN47$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN48$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN49$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN50$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN51$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN52$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN53$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN54$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN55$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN56$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN57$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN58$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN59$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN60$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN61$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN62$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN63$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN64$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN67$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN68$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN69$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN70$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN71$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN72$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN73$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN74$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN75$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN76$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN77$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN78$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN79$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN80$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN81$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN82$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN83$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN84$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN85$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN86$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN87$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN88$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN89$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN90$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN91$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN92$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN93$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN94$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN95$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN96$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN97$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN98$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN27.svy.QN99$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+  )
+)
+
+QN27_order &lt;- QN27_table %&gt;%
+  filter(QN27_p.val &lt;= 0.05) %&gt;%
+  arrange(QN27_p.val)
+
+QN27_order</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["QN27_p.val"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"25","2":"4.523651e-12"},{"1":"23","2":"5.237149e-10"},{"1":"24","2":"9.433278e-10"},{"1":"90","2":"3.626511e-06"},{"1":"41","2":"6.325955e-06"},{"1":"49","2":"1.313639e-05"},{"1":"20","2":"1.467620e-05"},{"1":"48","2":"1.806474e-05"},{"1":"57","2":"1.916554e-05"},{"1":"50","2":"2.258513e-05"},{"1":"22","2":"2.790399e-05"},{"1":"32","2":"5.370091e-05"},{"1":"98","2":"1.223256e-04"},{"1":"19","2":"4.752037e-04"},{"1":"55","2":"6.677534e-04"},{"1":"45","2":"7.101202e-04"},{"1":"13","2":"8.772764e-04"},{"1":"83","2":"1.281379e-03"},{"1":"34","2":"1.439357e-03"},{"1":"15","2":"1.740344e-03"},{"1":"35","2":"1.886721e-03"},{"1":"42","2":"3.395849e-03"},{"1":"38","2":"3.484816e-03"},{"1":"37","2":"3.807956e-03"},{"1":"68","2":"3.898576e-03"},{"1":"56","2":"4.677068e-03"},{"1":"31","2":"4.943430e-03"},{"1":"40","2":"5.071405e-03"},{"1":"60","2":"5.177465e-03"},{"1":"51","2":"5.471845e-03"},{"1":"47","2":"1.046182e-02"},{"1":"53","2":"1.053454e-02"},{"1":"10","2":"1.129141e-02"},{"1":"21","2":"1.225273e-02"},{"1":"62","2":"1.613612e-02"},{"1":"63","2":"1.890116e-02"},{"1":"30","2":"2.137869e-02"},{"1":"52","2":"2.206590e-02"},{"1":"54","2":"3.060733e-02"},{"1":"88","2":"3.755247e-02"},{"1":"94","2":"4.001243e-02"},{"1":"61","2":"4.350982e-02"},{"1":"91","2":"4.452945e-02"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#final model
+summary(svyglm(QN27 ~ QN25+QN23+QN24, data = black_data, design = yrbsdes, family = quasibinomial()))</code></pre>
+<pre><code>## 
+## Call:
+## svyglm(formula = QN27 ~ QN25 + QN23 + QN24, design = yrbsdes, 
+##     family = quasibinomial(), data = black_data)
+## 
+## Survey design:
+## svydesign(id = ~PSU, weight = ~WEIGHT, strata = ~STRATUM, data = black_data, 
+##     nest = TRUE)
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -4.0969     0.6112  -6.703 1.24e-07 ***
+## QN25          2.3435     0.2496   9.388 7.67e-11 ***
+## QN23          0.4952     0.2577   1.922  0.06328 .  
+## QN24          1.0357     0.3000   3.452  0.00154 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 0.9772361)
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>#QN25: Felt sad or hopeless (Sad or hopeless)
+#QN23: Were bullied on school property (Bullying at school)
+#QN24: Were electronically bullied (Electronic bullying)</code></pre>
+</div>
+<div id="qn28" class="section level1">
+<h1>QN28</h1>
+<pre class="r"><code>part1 &lt;- c()
+for (i in 1:18){
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
+}
+
+part2 &lt;- c()
+for (i in 23:57){
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
+}
+
+part3 &lt;- c()
+for (i in 60:92){
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
+}
+
+df_28 &lt;- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+df_28 %&gt;%
+  arrange(value)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"23","2":"2.533222e-13"},{"1":"25","2":"7.551625e-10"},{"1":"49","2":"3.453236e-08"},{"1":"24","2":"1.281112e-07"},{"1":"90","2":"3.427307e-07"},{"1":"48","2":"1.262909e-06"},{"1":"41","2":"1.528314e-06"},{"1":"45","2":"3.112907e-06"},{"1":"20","2":"3.893037e-06"},{"1":"53","2":"4.839553e-06"},{"1":"22","2":"5.691207e-06"},{"1":"38","2":"8.155127e-06"},{"1":"50","2":"9.210590e-06"},{"1":"52","2":"1.247467e-05"},{"1":"55","2":"1.591875e-05"},{"1":"40","2":"2.045791e-05"},{"1":"35","2":"2.620818e-05"},{"1":"12","2":"4.213046e-05"},{"1":"54","2":"5.915762e-05"},{"1":"51","2":"6.093336e-05"},{"1":"37","2":"6.658333e-05"},{"1":"56","2":"8.519634e-05"},{"1":"98","2":"8.970429e-05"},{"1":"91","2":"1.126169e-04"},{"1":"32","2":"1.861654e-04"},{"1":"10","2":"3.002812e-04"},{"1":"75","2":"3.041230e-04"},{"1":"42","2":"3.747165e-04"},{"1":"34","2":"4.112148e-04"},{"1":"19","2":"4.246672e-04"},{"1":"16","2":"5.379022e-04"},{"1":"18","2":"6.952089e-04"},{"1":"13","2":"9.560121e-04"},{"1":"21","2":"1.122003e-03"},{"1":"31","2":"1.377780e-03"},{"1":"15","2":"1.497651e-03"},{"1":"59","2":"2.794836e-03"},{"1":"9","2":"3.558415e-03"},{"1":"94","2":"3.821821e-03"},{"1":"72","2":"3.903783e-03"},{"1":"62","2":"4.425276e-03"},{"1":"47","2":"5.390938e-03"},{"1":"85","2":"6.099906e-03"},{"1":"83","2":"9.952125e-03"},{"1":"46","2":"1.026489e-02"},{"1":"60","2":"1.056776e-02"},{"1":"96","2":"1.292031e-02"},{"1":"30","2":"1.379649e-02"},{"1":"8","2":"1.394708e-02"},{"1":"67","2":"1.523672e-02"},{"1":"61","2":"1.767033e-02"},{"1":"14","2":"2.590987e-02"},{"1":"86","2":"3.394828e-02"},{"1":"68","2":"4.205209e-02"},{"1":"57","2":"4.224448e-02"},{"1":"17","2":"4.590471e-02"},{"1":"36","2":"4.687102e-02"},{"1":"99","2":"9.084350e-02"},{"1":"11","2":"9.940906e-02"},{"1":"97","2":"1.168601e-01"},{"1":"44","2":"1.170619e-01"},{"1":"58","2":"1.268184e-01"},{"1":"88","2":"1.305334e-01"},{"1":"89","2":"1.323829e-01"},{"1":"43","2":"1.569957e-01"},{"1":"84","2":"1.571250e-01"},{"1":"69","2":"1.834330e-01"},{"1":"33","2":"2.007511e-01"},{"1":"92","2":"2.242561e-01"},{"1":"63","2":"2.286945e-01"},{"1":"77","2":"2.578279e-01"},{"1":"39","2":"2.850834e-01"},{"1":"79","2":"3.869614e-01"},{"1":"76","2":"4.689372e-01"},{"1":"80","2":"5.226730e-01"},{"1":"74","2":"5.237894e-01"},{"1":"82","2":"5.691288e-01"},{"1":"81","2":"5.980232e-01"},{"1":"73","2":"6.042174e-01"},{"1":"64","2":"6.143583e-01"},{"1":"93","2":"7.418904e-01"},{"1":"78","2":"7.686675e-01"},{"1":"71","2":"8.379613e-01"},{"1":"87","2":"8.990604e-01"},{"1":"95","2":"9.730994e-01"},{"1":"70","2":"9.841495e-01"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>QN28.svy.QN8 &lt;- summary(svyglm(QN28 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN9 &lt;- summary(svyglm(QN28 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN10 &lt;- summary(svyglm(QN28 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN11 &lt;- summary(svyglm(QN28 ~ QN11, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN12 &lt;- summary(svyglm(QN28 ~ QN12, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN13 &lt;- summary(svyglm(QN28 ~ QN13, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN14 &lt;- summary(svyglm(QN28 ~ QN14, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN15 &lt;- summary(svyglm(QN28 ~ QN15, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN16 &lt;- summary(svyglm(QN28 ~ QN16, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN17 &lt;- summary(svyglm(QN28 ~ QN17, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN18 &lt;- summary(svyglm(QN28 ~ QN18, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN19 &lt;- summary(svyglm(QN28 ~ QN19, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN20 &lt;- summary(svyglm(QN28 ~ QN20, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN21 &lt;- summary(svyglm(QN28 ~ QN21, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN22 &lt;- summary(svyglm(QN28 ~ QN22, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN23 &lt;- summary(svyglm(QN28 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN24 &lt;- summary(svyglm(QN28 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN25 &lt;- summary(svyglm(QN28 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN30 &lt;- summary(svyglm(QN28 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN31 &lt;- summary(svyglm(QN28 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN32 &lt;- summary(svyglm(QN28 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN33 &lt;- summary(svyglm(QN28 ~ QN33, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN34 &lt;- summary(svyglm(QN28 ~ QN34, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN35 &lt;- summary(svyglm(QN28 ~ QN35, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN36 &lt;- summary(svyglm(QN28 ~ QN36, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN37 &lt;- summary(svyglm(QN28 ~ QN37, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN38 &lt;- summary(svyglm(QN28 ~ QN38, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN39 &lt;- summary(svyglm(QN28 ~ QN39, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN40 &lt;- summary(svyglm(QN28 ~ QN40, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN41 &lt;- summary(svyglm(QN28 ~ QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN42 &lt;- summary(svyglm(QN28 ~ QN42, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN43 &lt;- summary(svyglm(QN28 ~ QN43, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN44 &lt;- summary(svyglm(QN28 ~ QN44, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN45 &lt;- summary(svyglm(QN28 ~ QN45, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN46 &lt;- summary(svyglm(QN28 ~ QN46, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN47 &lt;- summary(svyglm(QN28 ~ QN47, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN48 &lt;- summary(svyglm(QN28 ~ QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN49 &lt;- summary(svyglm(QN28 ~ QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN50 &lt;- summary(svyglm(QN28 ~ QN50, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN51 &lt;- summary(svyglm(QN28 ~ QN51, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN52 &lt;- summary(svyglm(QN28 ~ QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN53 &lt;- summary(svyglm(QN28 ~ QN53, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN54 &lt;- summary(svyglm(QN28 ~ QN54, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN55 &lt;- summary(svyglm(QN28 ~ QN55, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN56 &lt;- summary(svyglm(QN28 ~ QN56, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN57 &lt;- summary(svyglm(QN28 ~ QN57, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN58 &lt;- summary(svyglm(QN28 ~ QN58, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN59 &lt;- summary(svyglm(QN28 ~ QN59, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN60 &lt;- summary(svyglm(QN28 ~ QN60, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN61 &lt;- summary(svyglm(QN28 ~ QN61, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN62 &lt;- summary(svyglm(QN28 ~ QN62, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN63 &lt;- summary(svyglm(QN28 ~ QN63, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN64 &lt;- summary(svyglm(QN28 ~ QN64, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN67 &lt;- summary(svyglm(QN28 ~ QN67, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN68 &lt;- summary(svyglm(QN28 ~ QN68, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN69 &lt;- summary(svyglm(QN28 ~ QN69, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN70 &lt;- summary(svyglm(QN28 ~ QN70, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN71 &lt;- summary(svyglm(QN28 ~ QN71, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN72 &lt;- summary(svyglm(QN28 ~ QN72, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN73 &lt;- summary(svyglm(QN28 ~ QN73, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN74 &lt;- summary(svyglm(QN28 ~ QN74, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN75 &lt;- summary(svyglm(QN28 ~ QN75, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN76 &lt;- summary(svyglm(QN28 ~ QN76, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN77 &lt;- summary(svyglm(QN28 ~ QN77, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN78 &lt;- summary(svyglm(QN28 ~ QN78, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN79 &lt;- summary(svyglm(QN28 ~ QN79, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN80 &lt;- summary(svyglm(QN28 ~ QN80, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN81 &lt;- summary(svyglm(QN28 ~ QN81, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN82 &lt;- summary(svyglm(QN28 ~ QN82, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN83 &lt;- summary(svyglm(QN28 ~ QN83, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN84 &lt;- summary(svyglm(QN28 ~ QN84, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN85 &lt;- summary(svyglm(QN28 ~ QN85, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN86 &lt;- summary(svyglm(QN28 ~ QN86, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN87 &lt;- summary(svyglm(QN28 ~ QN87, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN88 &lt;- summary(svyglm(QN28 ~ QN88, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN89 &lt;- summary(svyglm(QN28 ~ QN89, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN90 &lt;- summary(svyglm(QN28 ~ QN90, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN91 &lt;- summary(svyglm(QN28 ~ QN91, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN92 &lt;- summary(svyglm(QN28 ~ QN92, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN93 &lt;- summary(svyglm(QN28 ~ QN93, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN94 &lt;- summary(svyglm(QN28 ~ QN94, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN95 &lt;- summary(svyglm(QN28 ~ QN95, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN96 &lt;- summary(svyglm(QN28 ~ QN96, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN97 &lt;- summary(svyglm(QN28 ~ QN97, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN98 &lt;- summary(svyglm(QN28 ~ QN98, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28.svy.QN99 &lt;- summary(svyglm(QN28 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+QN28_table &lt;- data.frame(
+  Variable = c(8:25, 30:64, 67:99),
+  QN28_p.val = rbind(
+    QN28.svy.QN8$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN9$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN10$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN11$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN12$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN13$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN14$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN15$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN16$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN17$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN18$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN19$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN20$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN21$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN22$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN23$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN24$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN25$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN30$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN31$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN32$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN33$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN34$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN35$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN36$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN37$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN38$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN39$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN40$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN41$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN42$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN43$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN44$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN45$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN46$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN47$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN48$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN49$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN50$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN51$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN52$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN53$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN54$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN55$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN56$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN57$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN58$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN59$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN60$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN61$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN62$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN63$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN64$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN67$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN68$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN69$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN70$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN71$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN72$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN73$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN74$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN75$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN76$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN77$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN78$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN79$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN80$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN81$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN82$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN83$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN84$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN85$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN86$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN87$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN88$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN89$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN90$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN91$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN92$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN93$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN94$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN95$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN96$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN97$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN98$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN28.svy.QN99$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+  )
+)
+
+QN28_order &lt;- QN28_table %&gt;%
+  filter(QN28_p.val &lt;= 0.05) %&gt;%
+  arrange(QN28_p.val)
+
+QN28_order</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["QN28_p.val"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"23","2":"2.533222e-13"},{"1":"25","2":"7.551625e-10"},{"1":"49","2":"3.453236e-08"},{"1":"24","2":"1.281112e-07"},{"1":"90","2":"3.427307e-07"},{"1":"48","2":"1.262909e-06"},{"1":"41","2":"1.528314e-06"},{"1":"45","2":"3.112907e-06"},{"1":"20","2":"3.893037e-06"},{"1":"53","2":"4.839553e-06"},{"1":"22","2":"5.691207e-06"},{"1":"38","2":"8.155127e-06"},{"1":"50","2":"9.210590e-06"},{"1":"52","2":"1.247467e-05"},{"1":"55","2":"1.591875e-05"},{"1":"40","2":"2.045791e-05"},{"1":"35","2":"2.620818e-05"},{"1":"12","2":"4.213046e-05"},{"1":"54","2":"5.915762e-05"},{"1":"51","2":"6.093336e-05"},{"1":"37","2":"6.658333e-05"},{"1":"56","2":"8.519634e-05"},{"1":"98","2":"8.970429e-05"},{"1":"91","2":"1.126169e-04"},{"1":"32","2":"1.861654e-04"},{"1":"10","2":"3.002812e-04"},{"1":"75","2":"3.041230e-04"},{"1":"42","2":"3.747165e-04"},{"1":"34","2":"4.112148e-04"},{"1":"19","2":"4.246672e-04"},{"1":"16","2":"5.379022e-04"},{"1":"18","2":"6.952089e-04"},{"1":"13","2":"9.560121e-04"},{"1":"21","2":"1.122003e-03"},{"1":"31","2":"1.377780e-03"},{"1":"15","2":"1.497651e-03"},{"1":"59","2":"2.794836e-03"},{"1":"9","2":"3.558415e-03"},{"1":"94","2":"3.821821e-03"},{"1":"72","2":"3.903783e-03"},{"1":"62","2":"4.425276e-03"},{"1":"47","2":"5.390938e-03"},{"1":"85","2":"6.099906e-03"},{"1":"83","2":"9.952125e-03"},{"1":"46","2":"1.026489e-02"},{"1":"60","2":"1.056776e-02"},{"1":"96","2":"1.292031e-02"},{"1":"30","2":"1.379649e-02"},{"1":"8","2":"1.394708e-02"},{"1":"67","2":"1.523672e-02"},{"1":"61","2":"1.767033e-02"},{"1":"14","2":"2.590987e-02"},{"1":"86","2":"3.394828e-02"},{"1":"68","2":"4.205209e-02"},{"1":"57","2":"4.224448e-02"},{"1":"17","2":"4.590471e-02"},{"1":"36","2":"4.687102e-02"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#final model
+summary(svyglm(QN28 ~ QN23+QN25+QN49, data = black_data, design = yrbsdes, family = quasibinomial()))</code></pre>
+<pre><code>## 
+## Call:
+## svyglm(formula = QN28 ~ QN23 + QN25 + QN49, design = yrbsdes, 
+##     family = quasibinomial(), data = black_data)
+## 
+## Survey design:
+## svydesign(id = ~PSU, weight = ~WEIGHT, strata = ~STRATUM, data = black_data, 
+##     nest = TRUE)
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -4.7339     0.5566  -8.505 1.02e-09 ***
+## QN23          1.3571     0.2165   6.268 5.00e-07 ***
+## QN25          2.3796     0.3606   6.600 1.93e-07 ***
+## QN49          1.0061     0.2819   3.569  0.00115 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 0.916293)
+## 
+## Number of Fisher Scoring iterations: 7</code></pre>
+<pre class="r"><code>#QN23: Were bullied on school property (Bullying at school)
+#QN25: Felt sad or hopeless (Sad or hopeless)
+#QN49: Ever took prescription pain medicine without a doctor&#39;s prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use )</code></pre>
+</div>
+<div id="qn29" class="section level1">
+<h1>QN29</h1>
+<pre class="r"><code>part1 &lt;- c()
+for (i in 1:18){
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
+}
+
+part2 &lt;- c()
+for (i in 23:57){
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
+}
+
+part3 &lt;- c()
+for (i in 60:92){
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
+}
+
+df_29 &lt;- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+df_29 %&gt;%
+  arrange(value)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"69","2":"6.828602e-38"},{"1":"50","2":"1.413499e-08"},{"1":"52","2":"4.470913e-07"},{"1":"53","2":"8.805142e-07"},{"1":"38","2":"9.091687e-07"},{"1":"48","2":"1.647699e-06"},{"1":"54","2":"2.322280e-06"},{"1":"90","2":"2.394661e-06"},{"1":"37","2":"3.879264e-06"},{"1":"55","2":"7.159484e-06"},{"1":"60","2":"8.160211e-06"},{"1":"42","2":"9.346395e-06"},{"1":"91","2":"1.151357e-05"},{"1":"56","2":"1.395016e-05"},{"1":"25","2":"1.836043e-05"},{"1":"24","2":"2.026431e-05"},{"1":"49","2":"2.118065e-05"},{"1":"23","2":"2.252089e-05"},{"1":"96","2":"2.504171e-05"},{"1":"32","2":"3.043270e-05"},{"1":"59","2":"3.086835e-05"},{"1":"14","2":"4.517851e-05"},{"1":"31","2":"5.858611e-05"},{"1":"51","2":"1.236007e-04"},{"1":"41","2":"1.316456e-04"},{"1":"20","2":"4.246754e-04"},{"1":"21","2":"5.597076e-04"},{"1":"10","2":"5.768352e-04"},{"1":"13","2":"6.502445e-04"},{"1":"35","2":"8.997052e-04"},{"1":"9","2":"9.624192e-04"},{"1":"99","2":"9.693944e-04"},{"1":"61","2":"1.219238e-03"},{"1":"11","2":"1.273509e-03"},{"1":"22","2":"1.337510e-03"},{"1":"15","2":"1.857336e-03"},{"1":"30","2":"2.178906e-03"},{"1":"16","2":"2.290555e-03"},{"1":"12","2":"2.439997e-03"},{"1":"34","2":"2.968000e-03"},{"1":"40","2":"3.132439e-03"},{"1":"18","2":"3.930033e-03"},{"1":"98","2":"3.975095e-03"},{"1":"94","2":"4.616675e-03"},{"1":"47","2":"1.040604e-02"},{"1":"75","2":"1.218838e-02"},{"1":"45","2":"1.333037e-02"},{"1":"17","2":"1.431839e-02"},{"1":"62","2":"1.444581e-02"},{"1":"19","2":"1.765130e-02"},{"1":"72","2":"1.769377e-02"},{"1":"58","2":"1.973818e-02"},{"1":"85","2":"2.022731e-02"},{"1":"43","2":"2.684193e-02"},{"1":"8","2":"2.692417e-02"},{"1":"33","2":"5.190798e-02"},{"1":"46","2":"5.371316e-02"},{"1":"73","2":"6.362248e-02"},{"1":"83","2":"6.371446e-02"},{"1":"97","2":"1.334042e-01"},{"1":"74","2":"1.377298e-01"},{"1":"79","2":"1.504244e-01"},{"1":"44","2":"1.745898e-01"},{"1":"71","2":"1.856853e-01"},{"1":"39","2":"2.480977e-01"},{"1":"78","2":"2.969994e-01"},{"1":"57","2":"2.970610e-01"},{"1":"80","2":"3.090165e-01"},{"1":"88","2":"3.346315e-01"},{"1":"67","2":"3.405930e-01"},{"1":"87","2":"4.403364e-01"},{"1":"36","2":"5.084979e-01"},{"1":"84","2":"5.279499e-01"},{"1":"70","2":"5.996356e-01"},{"1":"89","2":"6.452515e-01"},{"1":"68","2":"6.889571e-01"},{"1":"64","2":"7.250546e-01"},{"1":"81","2":"7.750083e-01"},{"1":"92","2":"7.819993e-01"},{"1":"63","2":"7.917899e-01"},{"1":"76","2":"8.192721e-01"},{"1":"93","2":"8.317753e-01"},{"1":"82","2":"9.033381e-01"},{"1":"77","2":"9.499110e-01"},{"1":"95","2":"9.678999e-01"},{"1":"86","2":"9.905531e-01"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>QN29.svy.QN8 &lt;- summary(svyglm(QN29 ~ QN8, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN9 &lt;- summary(svyglm(QN29 ~ QN9, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN10 &lt;- summary(svyglm(QN29 ~ QN10, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN11 &lt;- summary(svyglm(QN29 ~ QN11, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN12 &lt;- summary(svyglm(QN29 ~ QN12, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN13 &lt;- summary(svyglm(QN29 ~ QN13, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN14 &lt;- summary(svyglm(QN29 ~ QN14, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN15 &lt;- summary(svyglm(QN29 ~ QN15, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN16 &lt;- summary(svyglm(QN29 ~ QN16, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN17 &lt;- summary(svyglm(QN29 ~ QN17, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN18 &lt;- summary(svyglm(QN29 ~ QN18, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN19 &lt;- summary(svyglm(QN29 ~ QN19, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN20 &lt;- summary(svyglm(QN29 ~ QN20, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN21 &lt;- summary(svyglm(QN29 ~ QN21, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN22 &lt;- summary(svyglm(QN29 ~ QN22, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN23 &lt;- summary(svyglm(QN29 ~ QN23, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN24 &lt;- summary(svyglm(QN29 ~ QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN25 &lt;- summary(svyglm(QN29 ~ QN25, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN30 &lt;- summary(svyglm(QN29 ~ QN30, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN31 &lt;- summary(svyglm(QN29 ~ QN31, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN32 &lt;- summary(svyglm(QN29 ~ QN32, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN33 &lt;- summary(svyglm(QN29 ~ QN33, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN34 &lt;- summary(svyglm(QN29 ~ QN34, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN35 &lt;- summary(svyglm(QN29 ~ QN35, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN36 &lt;- summary(svyglm(QN29 ~ QN36, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN37 &lt;- summary(svyglm(QN29 ~ QN37, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN38 &lt;- summary(svyglm(QN29 ~ QN38, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN39 &lt;- summary(svyglm(QN29 ~ QN39, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN40 &lt;- summary(svyglm(QN29 ~ QN40, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN41 &lt;- summary(svyglm(QN29 ~ QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN42 &lt;- summary(svyglm(QN29 ~ QN42, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN43 &lt;- summary(svyglm(QN29 ~ QN43, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN44 &lt;- summary(svyglm(QN29 ~ QN44, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN45 &lt;- summary(svyglm(QN29 ~ QN45, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN46 &lt;- summary(svyglm(QN29 ~ QN46, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN47 &lt;- summary(svyglm(QN29 ~ QN47, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN48 &lt;- summary(svyglm(QN29 ~ QN48, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN49 &lt;- summary(svyglm(QN29 ~ QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN50 &lt;- summary(svyglm(QN29 ~ QN50, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN51 &lt;- summary(svyglm(QN29 ~ QN51, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN52 &lt;- summary(svyglm(QN29 ~ QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN53 &lt;- summary(svyglm(QN29 ~ QN53, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN54 &lt;- summary(svyglm(QN29 ~ QN54, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN55 &lt;- summary(svyglm(QN29 ~ QN55, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN56 &lt;- summary(svyglm(QN29 ~ QN56, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN57 &lt;- summary(svyglm(QN29 ~ QN57, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN58 &lt;- summary(svyglm(QN29 ~ QN58, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN59 &lt;- summary(svyglm(QN29 ~ QN59, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN60 &lt;- summary(svyglm(QN29 ~ QN60, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN61 &lt;- summary(svyglm(QN29 ~ QN61, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN62 &lt;- summary(svyglm(QN29 ~ QN62, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN63 &lt;- summary(svyglm(QN29 ~ QN63, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN64 &lt;- summary(svyglm(QN29 ~ QN64, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN67 &lt;- summary(svyglm(QN29 ~ QN67, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN68 &lt;- summary(svyglm(QN29 ~ QN68, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN69 &lt;- summary(svyglm(QN29 ~ QN69, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN70 &lt;- summary(svyglm(QN29 ~ QN70, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN71 &lt;- summary(svyglm(QN29 ~ QN71, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN72 &lt;- summary(svyglm(QN29 ~ QN72, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN73 &lt;- summary(svyglm(QN29 ~ QN73, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN74 &lt;- summary(svyglm(QN29 ~ QN74, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN75 &lt;- summary(svyglm(QN29 ~ QN75, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN76 &lt;- summary(svyglm(QN29 ~ QN76, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN77 &lt;- summary(svyglm(QN29 ~ QN77, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN78 &lt;- summary(svyglm(QN29 ~ QN78, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN79 &lt;- summary(svyglm(QN29 ~ QN79, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN80 &lt;- summary(svyglm(QN29 ~ QN80, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN81 &lt;- summary(svyglm(QN29 ~ QN81, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN82 &lt;- summary(svyglm(QN29 ~ QN82, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN83 &lt;- summary(svyglm(QN29 ~ QN83, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN84 &lt;- summary(svyglm(QN29 ~ QN84, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN85 &lt;- summary(svyglm(QN29 ~ QN85, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN86 &lt;- summary(svyglm(QN29 ~ QN86, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN87 &lt;- summary(svyglm(QN29 ~ QN87, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN88 &lt;- summary(svyglm(QN29 ~ QN88, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN89 &lt;- summary(svyglm(QN29 ~ QN89, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN90 &lt;- summary(svyglm(QN29 ~ QN90, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN91 &lt;- summary(svyglm(QN29 ~ QN91, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN92 &lt;- summary(svyglm(QN29 ~ QN92, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN93 &lt;- summary(svyglm(QN29 ~ QN93, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN94 &lt;- summary(svyglm(QN29 ~ QN94, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN95 &lt;- summary(svyglm(QN29 ~ QN95, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN96 &lt;- summary(svyglm(QN29 ~ QN96, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN97 &lt;- summary(svyglm(QN29 ~ QN97, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN98 &lt;- summary(svyglm(QN29 ~ QN98, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29.svy.QN99 &lt;- summary(svyglm(QN29 ~ QN99, data = black_data, design = yrbsdes, family = quasibinomial()))
+
+QN29_table &lt;- data.frame(
+  Variable = c(8:25, 30:64, 67:99),
+  QN29_p.val = rbind(
+    QN29.svy.QN8$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN9$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN10$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN11$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN12$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN13$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN14$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN15$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN16$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN17$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN18$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN19$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN20$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN21$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN22$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN23$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN24$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN25$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN30$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN31$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN32$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN33$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN34$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN35$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN36$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN37$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN38$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN39$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN40$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN41$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN42$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN43$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN44$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN45$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN46$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN47$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN48$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN49$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN50$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN51$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN52$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN53$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN54$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN55$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN56$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN57$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN58$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN59$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN60$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN61$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN62$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN63$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN64$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN67$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN68$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN69$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN70$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN71$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN72$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN73$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN74$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN75$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN76$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN77$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN78$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN79$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN80$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN81$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN82$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN83$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN84$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN85$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN86$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN87$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN88$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN89$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN90$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN91$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN92$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN93$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN94$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN95$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN96$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN97$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN98$coef[-1, &quot;Pr(&gt;|t|)&quot;],
+    QN29.svy.QN99$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+  )
+)
+
+QN29_order &lt;- QN29_table %&gt;%
+  filter(QN29_p.val &lt;= 0.05) %&gt;%
+  arrange(QN29_p.val)
+
+QN29_order</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["QN29_p.val"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"69","2":"6.828532e-38"},{"1":"50","2":"1.413499e-08"},{"1":"52","2":"4.470913e-07"},{"1":"53","2":"8.805142e-07"},{"1":"38","2":"9.091687e-07"},{"1":"48","2":"1.647699e-06"},{"1":"54","2":"2.322280e-06"},{"1":"90","2":"2.394661e-06"},{"1":"37","2":"3.879264e-06"},{"1":"55","2":"7.159484e-06"},{"1":"60","2":"8.160211e-06"},{"1":"42","2":"9.346395e-06"},{"1":"91","2":"1.151357e-05"},{"1":"56","2":"1.395016e-05"},{"1":"25","2":"1.836043e-05"},{"1":"24","2":"2.026431e-05"},{"1":"49","2":"2.118065e-05"},{"1":"23","2":"2.252089e-05"},{"1":"96","2":"2.504171e-05"},{"1":"32","2":"3.043270e-05"},{"1":"59","2":"3.086835e-05"},{"1":"14","2":"4.517851e-05"},{"1":"31","2":"5.858611e-05"},{"1":"51","2":"1.236007e-04"},{"1":"41","2":"1.316456e-04"},{"1":"20","2":"4.246754e-04"},{"1":"21","2":"5.597076e-04"},{"1":"10","2":"5.768352e-04"},{"1":"13","2":"6.502445e-04"},{"1":"35","2":"8.997052e-04"},{"1":"9","2":"9.624192e-04"},{"1":"99","2":"9.693944e-04"},{"1":"61","2":"1.219238e-03"},{"1":"11","2":"1.273509e-03"},{"1":"22","2":"1.337510e-03"},{"1":"15","2":"1.857336e-03"},{"1":"30","2":"2.178906e-03"},{"1":"16","2":"2.290555e-03"},{"1":"12","2":"2.439997e-03"},{"1":"34","2":"2.968000e-03"},{"1":"40","2":"3.132439e-03"},{"1":"18","2":"3.930033e-03"},{"1":"98","2":"3.975095e-03"},{"1":"94","2":"4.616675e-03"},{"1":"47","2":"1.040604e-02"},{"1":"75","2":"1.218838e-02"},{"1":"45","2":"1.333037e-02"},{"1":"17","2":"1.431839e-02"},{"1":"62","2":"1.444581e-02"},{"1":"19","2":"1.765130e-02"},{"1":"72","2":"1.769377e-02"},{"1":"58","2":"1.973818e-02"},{"1":"85","2":"2.022731e-02"},{"1":"43","2":"2.684193e-02"},{"1":"8","2":"2.692417e-02"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>#final model
+summary(svyglm(QN29 ~ QN69+QN50+QN52, data = black_data, design = yrbsdes, family = quasibinomial()))</code></pre>
+<pre><code>## 
+## Call:
+## svyglm(formula = QN29 ~ QN69 + QN50 + QN52, design = yrbsdes, 
+##     family = quasibinomial(), data = black_data)
+## 
+## Survey design:
+## svydesign(id = ~PSU, weight = ~WEIGHT, strata = ~STRATUM, data = black_data, 
+##     nest = TRUE)
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  30.7406     0.9756  31.510  &lt; 2e-16 ***
+## QN69        -17.3118     0.3271 -52.922  &lt; 2e-16 ***
+## QN50          2.2144     0.6531   3.391  0.00187 ** 
+## QN52          1.7473     0.8479   2.061  0.04753 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 0.7621712)
 ## 
 ## Number of Fisher Scoring iterations: 19</code></pre>
+<pre class="r"><code>#QN69: Did not drink fruit juice (Fruit juice drinking)
+#QN50: Ever used cocaine 
+#QN52: Ever heroin use
+#**QN53: Ever used methamphetamines </code></pre>
 </div>
 
 
