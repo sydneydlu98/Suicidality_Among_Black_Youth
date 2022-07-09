@@ -2601,6 +2601,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
   max-width: 940px;
@@ -2621,6 +2622,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -2793,6 +2797,7 @@ library(table1)
 library(survey)
 library(broom)
 library(MASS)
+library(jtools)
 
 data &lt;- read.csv(&quot;yrbs2019.csv&quot;)</code></pre>
 </div>

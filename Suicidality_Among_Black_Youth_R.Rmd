@@ -23,6 +23,7 @@ library(table1)
 library(survey)
 library(broom)
 library(MASS)
+library(jtools)
 
 data <- read.csv("yrbs2019.csv")
 ```
