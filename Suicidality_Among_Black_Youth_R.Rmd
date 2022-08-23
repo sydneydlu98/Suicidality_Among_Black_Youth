@@ -24,6 +24,7 @@ library(survey)
 library(broom)
 library(MASS)
 library(jtools)
+library(plyr)
 
 data <- read.csv("yrbs2019.csv")
 ```
@@ -51,96 +52,45 @@ black_data <- data %>%
 
 ```{r}
 # make the independent variable 0 or 1
-black_data$QN8 = black_data$QN8 - 1
-black_data$QN9 = black_data$QN9 - 1
-black_data$QN10 = black_data$QN10 - 1
-black_data$QN11 = black_data$QN11 - 1
-black_data$QN12 = black_data$QN12 - 1
-black_data$QN13 = black_data$QN13 - 1
-black_data$QN14 = black_data$QN14 - 1
-black_data$QN15 = black_data$QN15 - 1
-black_data$QN16 = black_data$QN16 - 1
-black_data$QN17 = black_data$QN17 - 1
-black_data$QN18 = black_data$QN18 - 1
-black_data$QN19 = black_data$QN19 - 1
-black_data$QN20 = black_data$QN20 - 1
-black_data$QN21 = black_data$QN21 - 1
-black_data$QN22 = black_data$QN22 - 1
-black_data$QN23 = black_data$QN23 - 1
-black_data$QN24 = black_data$QN24 - 1
-black_data$QN25 = black_data$QN25 - 1
-black_data$QN26 = black_data$QN26 - 1
-black_data$QN27 = black_data$QN27 - 1
-black_data$QN28 = black_data$QN28 - 1
-black_data$QN29 = black_data$QN29 - 1
-black_data$QN30 = black_data$QN30 - 1
-black_data$QN31 = black_data$QN31 - 1
-black_data$QN32 = black_data$QN32 - 1
-black_data$QN33 = black_data$QN33 - 1
-black_data$QN34 = black_data$QN34 - 1
-black_data$QN35 = black_data$QN35 - 1
-black_data$QN36 = black_data$QN36 - 1
-black_data$QN37 = black_data$QN37 - 1
-black_data$QN38 = black_data$QN38 - 1
-black_data$QN39 = black_data$QN39 - 1
-black_data$QN40 = black_data$QN40 - 1
-black_data$QN41 = black_data$QN41 - 1
-black_data$QN42 = black_data$QN42 - 1
-black_data$QN43 = black_data$QN43 - 1
-black_data$QN44 = black_data$QN44 - 1
-black_data$QN45 = black_data$QN45 - 1
-black_data$QN46 = black_data$QN46 - 1
-black_data$QN47 = black_data$QN47 - 1
-black_data$QN48 = black_data$QN48 - 1
-black_data$QN49 = black_data$QN49 - 1
-black_data$QN50 = black_data$QN50 - 1
-black_data$QN51 = black_data$QN51 - 1
-black_data$QN52 = black_data$QN52 - 1
-black_data$QN53 = black_data$QN53 - 1
-black_data$QN54 = black_data$QN54 - 1
-black_data$QN55 = black_data$QN55 - 1
-black_data$QN56 = black_data$QN56 - 1
-black_data$QN57 = black_data$QN57 - 1
-black_data$QN58 = black_data$QN58 - 1
-black_data$QN59 = black_data$QN59 - 1
-black_data$QN60 = black_data$QN60 - 1
-black_data$QN61 = black_data$QN61 - 1
-black_data$QN62 = black_data$QN62 - 1
-black_data$QN63 = black_data$QN63 - 1
-black_data$QN64 = black_data$QN64 - 1
-black_data$QN67 = black_data$QN67 - 1
-black_data$QN68 = black_data$QN68 - 1
-black_data$QN69 = black_data$QN69 - 1
-black_data$QN70 = black_data$QN70 - 1
-black_data$QN71 = black_data$QN71 - 1
-black_data$QN72 = black_data$QN72 - 1
-black_data$QN73 = black_data$QN73 - 1
-black_data$QN74 = black_data$QN74 - 1
-black_data$QN75 = black_data$QN75 - 1
-black_data$QN76 = black_data$QN76 - 1
-black_data$QN77 = black_data$QN77 - 1
-black_data$QN78 = black_data$QN78 - 1
-black_data$QN79 = black_data$QN79 - 1
-black_data$QN80 = black_data$QN80 - 1
-black_data$QN81 = black_data$QN81 - 1
-black_data$QN82 = black_data$QN82 - 1
-black_data$QN83 = black_data$QN83 - 1
-black_data$QN84 = black_data$QN84 - 1
-black_data$QN85 = black_data$QN85 - 1
-black_data$QN86 = black_data$QN86 - 1
-black_data$QN87 = black_data$QN87 - 1
-black_data$QN88 = black_data$QN88 - 1
-black_data$QN89 = black_data$QN89 - 1
-black_data$QN90 = black_data$QN90 - 1
-black_data$QN91 = black_data$QN91 - 1
-black_data$QN92 = black_data$QN92 - 1
-black_data$QN93 = black_data$QN93 - 1
-black_data$QN94 = black_data$QN94 - 1
-black_data$QN95 = black_data$QN95 - 1
-black_data$QN96 = black_data$QN96 - 1
-black_data$QN97 = black_data$QN97 - 1
-black_data$QN98 = black_data$QN98 - 1
-black_data$QN99 = black_data$QN99 - 1
+black_data[black_data == 2] <- 0
+
+# convert age variable
+black_data$QN1 <- substr(black_data$Q1, 1, 2)
+black_data$QN1 <- as.numeric(black_data$QN1)
+
+# convert gender into: male = 0 and female = 1
+black_data$QN2[black_data$Q2 == "Female"] <- 1      
+black_data$QN2[black_data$Q2 == "Male"] <- 0  
+black_data$QN2[black_data$Q2 == "Missing"] <- NA
+
+# convert hispanic or latino into: yes = 1, no = 0
+black_data$QN3[black_data$Q4 == "Yes"] <- 1      
+black_data$QN3[black_data$Q4 == "No"] <- 0  
+black_data$QN3[black_data$Q4 == "Missing"] <- NA 
+
+# BMI (0 = underweight, 1 = normal, 2 = overweight, 3 = obese)
+black_data$BMI <- (black_data$Q7)/(black_data$Q6)^2
+black_data$QN4 <- cut(black_data$BMI,
+                      breaks = c(0, 18.4, 24.9, 39.9, 80),
+                      labels = c(0, 1, 2, 3))
+
+# QN65 & QN66 are sexual orientations, which has no data recorded in these 2 columns
+# Q65 & Q66 have difficulty converting data
+```
+
+```{r}
+# among those who had suicide attempt, let's see who has done severe suicide attempt
+suicide_attempt <- black_data %>%
+  filter(QN28 == 1)
+nrow(suicide_attempt)
+
+table(black_data$QN28, black_data$QN29)
+37/154
+
+## sensitivity analysis
+
+
+
 ```
 
 ```{r}
@@ -156,24 +106,30 @@ yrbsdes <- svydesign(id=~PSU,
 
 ```{r}
 part1 <- c()
-for (i in 1:18){
-      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+for (i in 1:4){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
 
 part2 <- c()
-for (i in 23:57){
+for (i in 1:18){
       part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df2 <- data.frame(value = part2) %>% na.omit()
 }
 
 part3 <- c()
-for (i in 60:92){
+for (i in 23:57){
       part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df3 <- data.frame(value = part3) %>% na.omit()
 }
 
-df_26 <- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+part4 <- c()
+for (i in 60:92){
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df4 <- data.frame(value = part4) %>% na.omit()
+}
+
+df_26 <- data.frame(variable = c(1:4, 8:25, 30:64, 67:99), value = rbind(df1, df2, df3, df4))
 df_26 %>%
   arrange(value)
 ```
@@ -192,24 +148,30 @@ summary(svyglm(QN26 ~ QN25+QN24+QN23+QN41+QN49, data = black_data, design = yrbs
 
 ```{r}
 part1 <- c()
-for (i in 1:18){
-      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+for (i in 1:4){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
 
 part2 <- c()
-for (i in 23:57){
+for (i in 1:18){
       part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df2 <- data.frame(value = part2) %>% na.omit()
 }
 
 part3 <- c()
-for (i in 60:92){
+for (i in 23:57){
       part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df3 <- data.frame(value = part3) %>% na.omit()
 }
 
-df_27 <- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+part4 <- c()
+for (i in 60:92){
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df4 <- data.frame(value = part4) %>% na.omit()
+}
+
+df_27 <- data.frame(variable = c(1:4, 8:25, 30:64, 67:99), value = rbind(df1, df2, df3, df4))
 df_27 %>%
   arrange(value)
 ```
@@ -226,59 +188,72 @@ summary(svyglm(QN27 ~ QN25+QN23+QN24, data = black_data, design = yrbsdes, famil
 
 ```{r}
 part1 <- c()
-for (i in 1:18){
-      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+for (i in 1:4){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
 
+
 part2 <- c()
-for (i in 23:57){
+for (i in 1:18){
       part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df2 <- data.frame(value = part2) %>% na.omit()
 }
 
 part3 <- c()
-for (i in 60:92){
+for (i in 23:57){
       part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df3 <- data.frame(value = part3) %>% na.omit()
 }
 
-df_28 <- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+part4 <- c()
+for (i in 60:92){
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df4 <- data.frame(value = part4) %>% na.omit()
+}
+
+df_28 <- data.frame(variable = c(1:4, 8:25, 30:64, 67:99), value = rbind(df1, df2, df3, df4))
 df_28 %>%
   arrange(value)
 ```
 
 ```{r}
-summary(svyglm(QN28 ~ QN23+QN25+QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+summary(svyglm(QN28 ~ QN23+QN25+QN1+QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
 
 #QN23: Were bullied on school property (Bullying at school)
 #QN25: Felt sad or hopeless (Sad or hopeless)
+#QN1: age
 #QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use )
 ```
-
 
 # QN29
 
 ```{r}
 part1 <- c()
-for (i in 1:18){
-      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+for (i in 1:4){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
 
 part2 <- c()
-for (i in 23:57){
+for (i in 1:18){
       part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df2 <- data.frame(value = part2) %>% na.omit()
 }
 
 part3 <- c()
-for (i in 60:92){
+for (i in 23:57){
       part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df3 <- data.frame(value = part3) %>% na.omit()
 }
 
-df_29 <- data.frame(variable = c(8:25, 30:64, 67:99), value = rbind(df1, df2, df3))
+part4 <- c()
+for (i in 60:92){
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df4 <- data.frame(value = part4) %>% na.omit()
+}
+
+df_29 <- data.frame(variable = c(1:4, 8:25, 30:64, 67:99), value = rbind(df1, df2, df3, df4))
 df_29 %>%
   arrange(value)
 ```
