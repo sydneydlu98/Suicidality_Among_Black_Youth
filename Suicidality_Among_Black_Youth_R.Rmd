@@ -1,5 +1,5 @@
 ---
-title: "Capstone"
+title: "Suicidality Among Black Youth"
 author: "Dingxin Lu"
 date: '2022-05-11'
 output: 
@@ -53,7 +53,9 @@ black_data <- data %>%
 ```{r}
 # make the independent variable 0 or 1
 black_data[black_data == 2] <- 0
+```
 
+```{r}
 # convert age variable
 black_data$QN1 <- substr(black_data$Q1, 1, 2)
 black_data$QN1 <- as.numeric(black_data$QN1)
@@ -63,19 +65,34 @@ black_data$QN2[black_data$Q2 == "Female"] <- 1
 black_data$QN2[black_data$Q2 == "Male"] <- 0  
 black_data$QN2[black_data$Q2 == "Missing"] <- NA
 
+# convert grade into numerical variabes
+black_data$QN3[black_data$Q3 == "9th grade"] <- 0      
+black_data$QN3[black_data$Q3 == "10th grade"] <- 1 
+black_data$QN3[black_data$Q3 == "11th grade"] <- 2
+black_data$QN3[black_data$Q3 == "12th grade"] <- 3 
+black_data$QN3[black_data$Q3 == "Missing"] <- NA
+black_data$QN3[black_data$Q3 == "Ungraded or other grade"] <- NA
+
 # convert hispanic or latino into: yes = 1, no = 0
-black_data$QN3[black_data$Q4 == "Yes"] <- 1      
-black_data$QN3[black_data$Q4 == "No"] <- 0  
-black_data$QN3[black_data$Q4 == "Missing"] <- NA 
+black_data$QN4[black_data$Q4 == "Yes"] <- 1      
+black_data$QN4[black_data$Q4 == "No"] <- 0  
+black_data$QN4[black_data$Q4 == "Missing"] <- NA 
 
-# BMI (0 = underweight, 1 = normal, 2 = overweight, 3 = obese)
+# BMI (0 = normal, 1 = overweight, 2 = obese)
 black_data$BMI <- (black_data$Q7)/(black_data$Q6)^2
-black_data$QN4 <- cut(black_data$BMI,
-                      breaks = c(0, 18.4, 24.9, 39.9, 80),
-                      labels = c(0, 1, 2, 3))
+black_data$QN5 <- cut(black_data$BMI,
+                      breaks = c(0, 24.9, 39.9, 80),
+                      labels = c(0, 1, 2))
 
-# QN65 & QN66 are sexual orientations, which has no data recorded in these 2 columns
-# Q65 & Q66 have difficulty converting data
+# QN65 is un-usable, because it is the variable for "During your life, with whom have you had sexual contact?"; It has the selection of male, female, Females and males and I have never had sexual contact  which are not helpful for analysis
+
+# QN66 is "sexual orientation", such as Heterosexual (straight), Gay or lesbian, Bisexual and Not sure.
+# convert QN66 to: Heterosexual (straight) = 0; Gay or lesbian = 1; Bisexual = 2; Not sure = NA
+black_data$QN66[black_data$Q66 == "Heterosexual (straight)"] <- 0      
+black_data$QN66[black_data$Q66 == "Gay or lesbian"] <- 1  
+black_data$QN66[black_data$Q66 == "Bisexual"] <- 1
+black_data$QN66[black_data$Q66 == "Missing"] <- NA 
+black_data$QN66[black_data$Q66 == "Not sure"] <- NA 
 ```
 
 ```{r}
@@ -106,7 +123,7 @@ yrbsdes <- svydesign(id=~PSU,
 
 ```{r}
 part1 <- c()
-for (i in 1:4){
+for (i in 1:5){
       part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
@@ -124,31 +141,31 @@ for (i in 23:57){
 }
 
 part4 <- c()
-for (i in 60:92){
+for (i in 59:92){
       part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df4 <- data.frame(value = part4) %>% na.omit()
 }
 
-df_26 <- data.frame(variable = c(1:4, 8:25, 30:64, 67:99), value = rbind(df1, df2, df3, df4))
+df_26 <- data.frame(variable = c(1:5, 8:25, 30:64, 66:99), value = rbind(df1, df2, df3, df4))
 df_26 %>%
   arrange(value)
 ```
 
 ```{r}
-summary(svyglm(QN26 ~ QN25+QN24+QN23+QN41+QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+summary(svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
 
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN24: Were electronically bullied (Electronic bullying)
+#QN66: sexual orientation
 #QN23: Were bullied on school property (Bullying at school)
 #QN41: Current alcohol use; Dependence: Required by QN44
-#QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use)
 ```
 
 # QN27
 
 ```{r}
 part1 <- c()
-for (i in 1:4){
+for (i in 1:5){
       part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
@@ -166,12 +183,12 @@ for (i in 23:57){
 }
 
 part4 <- c()
-for (i in 60:92){
+for (i in 59:92){
       part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df4 <- data.frame(value = part4) %>% na.omit()
 }
 
-df_27 <- data.frame(variable = c(1:4, 8:25, 30:64, 67:99), value = rbind(df1, df2, df3, df4))
+df_27 <- data.frame(variable = c(1:5, 8:25, 30:64, 66:99), value = rbind(df1, df2, df3, df4))
 df_27 %>%
   arrange(value)
 ```
@@ -188,7 +205,7 @@ summary(svyglm(QN27 ~ QN25+QN23+QN24, data = black_data, design = yrbsdes, famil
 
 ```{r}
 part1 <- c()
-for (i in 1:4){
+for (i in 1:5){
       part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
@@ -207,12 +224,12 @@ for (i in 23:57){
 }
 
 part4 <- c()
-for (i in 60:92){
+for (i in 59:92){
       part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df4 <- data.frame(value = part4) %>% na.omit()
 }
 
-df_28 <- data.frame(variable = c(1:4, 8:25, 30:64, 67:99), value = rbind(df1, df2, df3, df4))
+df_28 <- data.frame(variable = c(1:5, 8:25, 30:64, 66:99), value = rbind(df1, df2, df3, df4))
 df_28 %>%
   arrange(value)
 ```
@@ -230,7 +247,7 @@ summary(svyglm(QN28 ~ QN23+QN25+QN1+QN49, data = black_data, design = yrbsdes, f
 
 ```{r}
 part1 <- c()
-for (i in 1:4){
+for (i in 1:5){
       part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
@@ -248,12 +265,12 @@ for (i in 23:57){
 }
 
 part4 <- c()
-for (i in 60:92){
+for (i in 59:92){
       part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df4 <- data.frame(value = part4) %>% na.omit()
 }
 
-df_29 <- data.frame(variable = c(1:4, 8:25, 30:64, 67:99), value = rbind(df1, df2, df3, df4))
+df_29 <- data.frame(variable = c(1:5, 8:25, 30:64, 66:99), value = rbind(df1, df2, df3, df4))
 df_29 %>%
   arrange(value)
 ```
