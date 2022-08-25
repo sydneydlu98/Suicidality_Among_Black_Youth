@@ -92,7 +92,7 @@ black_data$QN66[black_data$Q66 == "Heterosexual (straight)"] <- 0
 black_data$QN66[black_data$Q66 == "Gay or lesbian"] <- 1  
 black_data$QN66[black_data$Q66 == "Bisexual"] <- 1
 black_data$QN66[black_data$Q66 == "Missing"] <- NA 
-black_data$QN66[black_data$Q66 == "Not sure"] <- NA 
+black_data$QN66[black_data$Q66 == "Not sure"] <- NA
 ```
 
 ```{r}
@@ -102,10 +102,9 @@ suicide_attempt <- black_data %>%
 nrow(suicide_attempt)
 
 table(black_data$QN28, black_data$QN29)
-37/154
+37/154 ##24%
 
-## sensitivity analysis
-
+# subgroup analysis (only study those who had severe suicide attempt among those who had suicide attempt)
 
 
 ```
@@ -152,13 +151,14 @@ df_26 %>%
 ```
 
 ```{r}
-summary(svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN41, data = black_data, design = yrbsdes, family = quasibinomial()))
+summary(svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN41+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
 
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN24: Were electronically bullied (Electronic bullying)
 #QN66: sexual orientation
 #QN23: Were bullied on school property (Bullying at school)
 #QN41: Current alcohol use; Dependence: Required by QN44
+#QN2: gender
 ```
 
 # QN27
@@ -194,11 +194,12 @@ df_27 %>%
 ```
 
 ```{r}
-summary(svyglm(QN27 ~ QN25+QN23+QN24, data = black_data, design = yrbsdes, family = quasibinomial()))
+summary(svyglm(QN27 ~ QN25+QN23+QN24+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
 
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN23: Were bullied on school property (Bullying at school)
 #QN24: Were electronically bullied (Electronic bullying)
+#QN2: gender
 ```
 
 # QN28
@@ -235,15 +236,18 @@ df_28 %>%
 ```
 
 ```{r}
-summary(svyglm(QN28 ~ QN23+QN25+QN1+QN49, data = black_data, design = yrbsdes, family = quasibinomial()))
+summary(svyglm(QN28 ~ QN23+QN25+QN1+QN49+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
 
 #QN23: Were bullied on school property (Bullying at school)
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN1: age
 #QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use )
+#QN2: gender
 ```
 
 # QN29
+
+## Method 1
 
 ```{r}
 part1 <- c()
@@ -276,10 +280,22 @@ df_29 %>%
 ```
 
 ```{r}
-summary(svyglm(QN29 ~ QN69+QN50+QN52, data = black_data, design = yrbsdes, family = quasibinomial()))
+summary(svyglm(QN29 ~ QN69+QN50+QN52+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
 
 #QN69: Did not drink fruit juice (Fruit juice drinking)
 #QN50: Ever used cocaine 
 #QN52: Ever heroin use
-#**QN53: Ever used methamphetamines 
+#QN2: gender
 ```
+
+## Method 2: Subgroup analysis
+
+```{r}
+# only study those who had severe suicide attempt among those who had suicide attempt
+## change survey design
+
+
+```
+
+
+## Comparison
