@@ -2860,19 +2860,6 @@ black_data$QN66[black_data$Q66 == &quot;Gay or lesbian&quot;] &lt;- 1
 black_data$QN66[black_data$Q66 == &quot;Bisexual&quot;] &lt;- 1
 black_data$QN66[black_data$Q66 == &quot;Missing&quot;] &lt;- NA 
 black_data$QN66[black_data$Q66 == &quot;Not sure&quot;] &lt;- NA</code></pre>
-<pre class="r"><code># among those who had suicide attempt, let&#39;s see who has done severe suicide attempt
-suicide_attempt &lt;- black_data %&gt;%
-  filter(QN28 == 1)
-nrow(suicide_attempt)</code></pre>
-<pre><code>## [1] 154</code></pre>
-<pre class="r"><code>table(black_data$QN28, black_data$QN29)</code></pre>
-<pre><code>##    
-##        0    1
-##   0 1966    0
-##   1   77   37</code></pre>
-<pre class="r"><code>37/154 ##24%</code></pre>
-<pre><code>## [1] 0.2402597</code></pre>
-<pre class="r"><code># subgroup analysis (only study those who had severe suicide attempt among those who had suicide attempt)</code></pre>
 <pre class="r"><code># weighted design data
 yrbsdes &lt;- svydesign(id=~PSU, 
                      weight=~WEIGHT, 
@@ -2884,7 +2871,7 @@ yrbsdes &lt;- svydesign(id=~PSU,
 <h1>QN26</h1>
 <pre class="r"><code>part1 &lt;- c()
 for (i in 1:5){
-      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
 }</code></pre>
 <pre><code>## Warning in part1[i] &lt;- summary(svyglm(reformulate(paste0(&quot;factor(QN&quot;, i, :
@@ -2897,19 +2884,19 @@ for (i in 1:5){
 ## number of items to replace is not a multiple of replacement length</code></pre>
 <pre class="r"><code>part2 &lt;- c()
 for (i in 1:18){
-      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
 }
 
 part3 &lt;- c()
 for (i in 23:57){
-      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
 }
 
 part4 &lt;- c()
 for (i in 59:92){
-      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN26)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df4 &lt;- data.frame(value = part4) %&gt;% na.omit()
 }
 
@@ -2957,7 +2944,7 @@ df_26 %&gt;%
 <h1>QN27</h1>
 <pre class="r"><code>part1 &lt;- c()
 for (i in 1:5){
-      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
 }</code></pre>
 <pre><code>## Warning in part1[i] &lt;- summary(svyglm(reformulate(paste0(&quot;factor(QN&quot;, i, :
@@ -2970,19 +2957,19 @@ for (i in 1:5){
 ## number of items to replace is not a multiple of replacement length</code></pre>
 <pre class="r"><code>part2 &lt;- c()
 for (i in 1:18){
-      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
 }
 
 part3 &lt;- c()
 for (i in 23:57){
-      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
 }
 
 part4 &lt;- c()
 for (i in 59:92){
-      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN27)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df4 &lt;- data.frame(value = part4) %&gt;% na.omit()
 }
 
@@ -3026,7 +3013,7 @@ df_27 %&gt;%
 <h1>QN28</h1>
 <pre class="r"><code>part1 &lt;- c()
 for (i in 1:5){
-      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
 }</code></pre>
 <pre><code>## Warning in part1[i] &lt;- summary(svyglm(reformulate(paste0(&quot;factor(QN&quot;, i, :
@@ -3039,19 +3026,19 @@ for (i in 1:5){
 ## number of items to replace is not a multiple of replacement length</code></pre>
 <pre class="r"><code>part2 &lt;- c()
 for (i in 1:18){
-      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
 }
 
 part3 &lt;- c()
 for (i in 23:57){
-      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
 }
 
 part4 &lt;- c()
 for (i in 59:92){
-      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN28)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df4 &lt;- data.frame(value = part4) %&gt;% na.omit()
 }
 
@@ -3099,7 +3086,7 @@ df_28 %&gt;%
 <h2>Method 1</h2>
 <pre class="r"><code>part1 &lt;- c()
 for (i in 1:5){
-      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
 }</code></pre>
 <pre><code>## Warning in part1[i] &lt;- summary(svyglm(reformulate(paste0(&quot;factor(QN&quot;, i, :
@@ -3112,24 +3099,24 @@ for (i in 1:5){
 ## number of items to replace is not a multiple of replacement length</code></pre>
 <pre class="r"><code>part2 &lt;- c()
 for (i in 1:18){
-      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
 }
 
 part3 &lt;- c()
 for (i in 23:57){
-      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
 }
 
 part4 &lt;- c()
 for (i in 59:92){
-      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
       df4 &lt;- data.frame(value = part4) %&gt;% na.omit()
 }
 
-df_29 &lt;- data.frame(variable = c(1:5, 8:25, 30:64, 66:99), value = rbind(df1, df2, df3, df4))
-df_29 %&gt;%
+df_29_a &lt;- data.frame(variable = c(1:5, 8:25, 30:64, 66:99), value = rbind(df1, df2, df3, df4))
+df_29_a %&gt;%
   arrange(value)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -3166,11 +3153,101 @@ df_29 %&gt;%
 </div>
 <div id="method-2-subgroup-analysis" class="section level2">
 <h2>Method 2: Subgroup analysis</h2>
+<pre class="r"><code># among those who had suicide attempt, let&#39;s see who has done severe suicide attempt
+suicide_attempt &lt;- black_data %&gt;%
+  filter(QN28 == 1)
+
+# number of participants who had suicide attempt
+nrow(suicide_attempt)</code></pre>
+<pre><code>## [1] 154</code></pre>
+<pre class="r"><code>table(black_data$QN28, black_data$QN29)</code></pre>
+<pre><code>##    
+##        0    1
+##   0 1966    0
+##   1   77   37</code></pre>
+<pre class="r"><code>37/154 ##24%</code></pre>
+<pre><code>## [1] 0.2402597</code></pre>
+<p>24% of participants had suicide attempt also had severe suicide
+attempt.</p>
 <pre class="r"><code># only study those who had severe suicide attempt among those who had suicide attempt
-## change survey design</code></pre>
+# weighted design data for the subgroup
+yrbsdes_subgroup &lt;- svydesign(
+  id =  ~ PSU,
+  weight =  ~ WEIGHT,
+  strata =  ~ STRATUM,
+  data = suicide_attempt,
+  nest = TRUE
+)
+
+# The issue is because Stratum 102 has only one PSU sampled
+# therefore there’s no variability to calculate the variance
+options(survey.adjust.domain.lonely=TRUE)
+options(survey.lonely.psu=&#39;certainty&#39;)</code></pre>
+<pre class="r"><code>part1 &lt;- c()
+for (i in 1:5){
+      part1[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df1 &lt;- data.frame(value = part1) %&gt;% na.omit()
+}
+
+part2 &lt;- c()
+for (i in 1:18){
+      part2[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df2 &lt;- data.frame(value = part2) %&gt;% na.omit()
+}
+
+part3 &lt;- c()
+for (i in 23:25){
+      part3[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df3 &lt;- data.frame(value = part3) %&gt;% na.omit()
+}
+
+part4 &lt;- c()
+for (i in 27:57){
+      part4[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df4 &lt;- data.frame(value = part4) %&gt;% na.omit()
+}
+
+part5 &lt;- c()
+for (i in 59:92){
+      part5[i] &lt;- summary(svyglm(reformulate(paste0(&#39;factor(QN&#39;, i+7, &#39;)&#39;), response = &#39;factor(QN29)&#39;), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, &quot;Pr(&gt;|t|)&quot;]
+      df5 &lt;- data.frame(value = part5) %&gt;% na.omit()
+}
+
+df_29_b &lt;- data.frame(variable = c(1:5, 8:25, 30:32, 34:64, 66:99), value = rbind(df1, df2, df3, df4, df5))
+df_29_b %&gt;%
+  arrange(value)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"69","2":"3.511008e-14"},{"1":"99","2":"8.321816e-12"},{"1":"43","2":"5.998415e-10"},{"1":"54","2":"1.159207e-04"},{"1":"31","2":"2.963227e-04"},{"1":"91","2":"3.151880e-04"},{"1":"37","2":"3.648911e-04"},{"1":"11","2":"4.448718e-04"},{"1":"38","2":"1.057134e-03"},{"1":"96","2":"1.366119e-03"},{"1":"59","2":"1.993576e-03"},{"1":"93","2":"2.967868e-03"},{"1":"60","2":"3.918662e-03"},{"1":"9","2":"4.926663e-03"},{"1":"14","2":"5.434986e-03"},{"1":"68","2":"8.151689e-03"},{"1":"50","2":"9.233801e-03"},{"1":"48","2":"1.335688e-02"},{"1":"90","2":"1.593481e-02"},{"1":"53","2":"2.020296e-02"},{"1":"32","2":"2.507121e-02"},{"1":"52","2":"2.554421e-02"},{"1":"4","2":"2.855781e-02"},{"1":"30","2":"2.936706e-02"},{"1":"1","2":"2.959045e-02"},{"1":"21","2":"3.241943e-02"},{"1":"61","2":"3.259450e-02"},{"1":"73","2":"3.275557e-02"},{"1":"58","2":"5.386161e-02"},{"1":"42","2":"6.334164e-02"},{"1":"17","2":"6.763301e-02"},{"1":"56","2":"6.823648e-02"},{"1":"16","2":"8.127170e-02"},{"1":"3","2":"8.760939e-02"},{"1":"15","2":"9.248767e-02"},{"1":"8","2":"9.493391e-02"},{"1":"18","2":"1.001443e-01"},{"1":"71","2":"1.031855e-01"},{"1":"51","2":"1.070964e-01"},{"1":"13","2":"1.156501e-01"},{"1":"49","2":"1.194727e-01"},{"1":"10","2":"1.197064e-01"},{"1":"20","2":"1.280349e-01"},{"1":"2","2":"1.345320e-01"},{"1":"24","2":"1.373628e-01"},{"1":"85","2":"1.403712e-01"},{"1":"79","2":"1.443029e-01"},{"1":"86","2":"1.757971e-01"},{"1":"55","2":"1.859740e-01"},{"1":"64","2":"1.866193e-01"},{"1":"72","2":"1.992113e-01"},{"1":"35","2":"2.049316e-01"},{"1":"87","2":"2.364828e-01"},{"1":"47","2":"2.422127e-01"},{"1":"94","2":"2.773522e-01"},{"1":"75","2":"2.854537e-01"},{"1":"92","2":"2.925799e-01"},{"1":"41","2":"3.001346e-01"},{"1":"74","2":"3.026178e-01"},{"1":"44","2":"3.129102e-01"},{"1":"78","2":"3.163028e-01"},{"1":"76","2":"3.272225e-01"},{"1":"22","2":"3.346916e-01"},{"1":"97","2":"3.394462e-01"},{"1":"12","2":"3.605789e-01"},{"1":"19","2":"3.631450e-01"},{"1":"5","2":"4.002778e-01"},{"1":"77","2":"4.015449e-01"},{"1":"34","2":"4.057731e-01"},{"1":"23","2":"4.144254e-01"},{"1":"98","2":"4.647648e-01"},{"1":"25","2":"5.108731e-01"},{"1":"39","2":"5.293547e-01"},{"1":"46","2":"5.354028e-01"},{"1":"89","2":"5.374560e-01"},{"1":"80","2":"5.495878e-01"},{"1":"88","2":"5.717812e-01"},{"1":"62","2":"5.730174e-01"},{"1":"81","2":"5.935189e-01"},{"1":"63","2":"6.325716e-01"},{"1":"84","2":"6.532490e-01"},{"1":"67","2":"6.645325e-01"},{"1":"40","2":"7.053793e-01"},{"1":"36","2":"7.546495e-01"},{"1":"82","2":"7.686334e-01"},{"1":"70","2":"8.013960e-01"},{"1":"45","2":"8.279490e-01"},{"1":"66","2":"8.527428e-01"},{"1":"57","2":"8.646578e-01"},{"1":"83","2":"8.661860e-01"},{"1":"95","2":"9.864967e-01"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
-<div id="comparison" class="section level2">
-<h2>Comparison</h2>
+<pre class="r"><code>summary(svyglm(QN29 ~ QN69 + QN99 + QN43 + QN54, data = suicide_attempt, design = yrbsdes_subgroup, family = quasibinomial()))</code></pre>
+<pre><code>## 
+## Call:
+## svyglm(formula = QN29 ~ QN69 + QN99 + QN43 + QN54, design = yrbsdes_subgroup, 
+##     family = quasibinomial(), data = suicide_attempt)
+## 
+## Survey design:
+## svydesign(id = ~PSU, weight = ~WEIGHT, strata = ~STRATUM, data = suicide_attempt, 
+##     nest = TRUE)
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  16.5044     1.0000  16.504 7.32e-07 ***
+## QN69        -19.0858     0.7987 -23.896 5.72e-08 ***
+## QN99        -17.1197     1.0898 -15.710 1.03e-06 ***
+## QN43         15.6970     1.5343  10.231 1.84e-05 ***
+## QN54          2.7169     1.2412   2.189   0.0648 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for quasibinomial family taken to be 0.9476388)
+## 
+## Number of Fisher Scoring iterations: 17</code></pre>
+<pre class="r"><code># QN69: Did not drink fruit juice 
+# QN99: How well do you speak English?        
+# QN43: During the past 30 days, what is the largest number of alcoholic drinks you had in a row, that is, within a couple of hours? (Binary: Reported that the largest number of drinks they had in a row was 10 or more)      
+# QN54: Ever used ecstasy </code></pre>
 </div>
 </div>
 

@@ -96,20 +96,6 @@ black_data$QN66[black_data$Q66 == "Not sure"] <- NA
 ```
 
 ```{r}
-# among those who had suicide attempt, let's see who has done severe suicide attempt
-suicide_attempt <- black_data %>%
-  filter(QN28 == 1)
-nrow(suicide_attempt)
-
-table(black_data$QN28, black_data$QN29)
-37/154 ##24%
-
-# subgroup analysis (only study those who had severe suicide attempt among those who had suicide attempt)
-
-
-```
-
-```{r}
 # weighted design data
 yrbsdes <- svydesign(id=~PSU, 
                      weight=~WEIGHT, 
@@ -123,25 +109,25 @@ yrbsdes <- svydesign(id=~PSU,
 ```{r}
 part1 <- c()
 for (i in 1:5){
-      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN26)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
 
 part2 <- c()
 for (i in 1:18){
-      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df2 <- data.frame(value = part2) %>% na.omit()
 }
 
 part3 <- c()
 for (i in 23:57){
-      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df3 <- data.frame(value = part3) %>% na.omit()
 }
 
 part4 <- c()
 for (i in 59:92){
-      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN26)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df4 <- data.frame(value = part4) %>% na.omit()
 }
 
@@ -166,25 +152,25 @@ summary(svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN41+QN2, data = black_data, design = 
 ```{r}
 part1 <- c()
 for (i in 1:5){
-      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN27)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
 
 part2 <- c()
 for (i in 1:18){
-      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df2 <- data.frame(value = part2) %>% na.omit()
 }
 
 part3 <- c()
 for (i in 23:57){
-      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df3 <- data.frame(value = part3) %>% na.omit()
 }
 
 part4 <- c()
 for (i in 59:92){
-      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN27)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df4 <- data.frame(value = part4) %>% na.omit()
 }
 
@@ -207,26 +193,26 @@ summary(svyglm(QN27 ~ QN25+QN23+QN24+QN2, data = black_data, design = yrbsdes, f
 ```{r}
 part1 <- c()
 for (i in 1:5){
-      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN28)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
 
 
 part2 <- c()
 for (i in 1:18){
-      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df2 <- data.frame(value = part2) %>% na.omit()
 }
 
 part3 <- c()
 for (i in 23:57){
-      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df3 <- data.frame(value = part3) %>% na.omit()
 }
 
 part4 <- c()
 for (i in 59:92){
-      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN28)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df4 <- data.frame(value = part4) %>% na.omit()
 }
 
@@ -252,36 +238,35 @@ summary(svyglm(QN28 ~ QN23+QN25+QN1+QN49+QN2, data = black_data, design = yrbsde
 ```{r}
 part1 <- c()
 for (i in 1:5){
-      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN29)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df1 <- data.frame(value = part1) %>% na.omit()
 }
 
 part2 <- c()
 for (i in 1:18){
-      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df2 <- data.frame(value = part2) %>% na.omit()
 }
 
 part3 <- c()
 for (i in 23:57){
-      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df3 <- data.frame(value = part3) %>% na.omit()
 }
 
 part4 <- c()
 for (i in 59:92){
-      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes, data = black_data, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
       df4 <- data.frame(value = part4) %>% na.omit()
 }
 
-df_29 <- data.frame(variable = c(1:5, 8:25, 30:64, 66:99), value = rbind(df1, df2, df3, df4))
-df_29 %>%
+df_29_a <- data.frame(variable = c(1:5, 8:25, 30:64, 66:99), value = rbind(df1, df2, df3, df4))
+df_29_a %>%
   arrange(value)
 ```
 
 ```{r}
 summary(svyglm(QN29 ~ QN69+QN50+QN52+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
-
 #QN69: Did not drink fruit juice (Fruit juice drinking)
 #QN50: Ever used cocaine 
 #QN52: Ever heroin use
@@ -291,11 +276,76 @@ summary(svyglm(QN29 ~ QN69+QN50+QN52+QN2, data = black_data, design = yrbsdes, f
 ## Method 2: Subgroup analysis
 
 ```{r}
-# only study those who had severe suicide attempt among those who had suicide attempt
-## change survey design
+# among those who had suicide attempt, let's see who has done severe suicide attempt
+suicide_attempt <- black_data %>%
+  filter(QN28 == 1)
 
+# number of participants who had suicide attempt
+nrow(suicide_attempt)
 
+table(black_data$QN28, black_data$QN29)
+37/154 ##24%
 ```
 
+24% of participants had suicide attempt also had severe suicide attempt.
 
-## Comparison
+```{r}
+# only study those who had severe suicide attempt among those who had suicide attempt
+# weighted design data for the subgroup
+yrbsdes_subgroup <- svydesign(
+  id =  ~ PSU,
+  weight =  ~ WEIGHT,
+  strata =  ~ STRATUM,
+  data = suicide_attempt,
+  nest = TRUE
+)
+
+# The issue is because Stratum 102 has only one PSU sampled
+# therefore there’s no variability to calculate the variance
+options(survey.adjust.domain.lonely=TRUE)
+options(survey.lonely.psu='certainty')
+```
+
+```{r, warning=FALSE}
+part1 <- c()
+for (i in 1:5){
+      part1[i] <- summary(svyglm(reformulate(paste0('factor(QN', i, ')'), response = 'factor(QN29)'), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df1 <- data.frame(value = part1) %>% na.omit()
+}
+
+part2 <- c()
+for (i in 1:18){
+      part2[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df2 <- data.frame(value = part2) %>% na.omit()
+}
+
+part3 <- c()
+for (i in 23:25){
+      part3[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df3 <- data.frame(value = part3) %>% na.omit()
+}
+
+part4 <- c()
+for (i in 27:57){
+      part4[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df4 <- data.frame(value = part4) %>% na.omit()
+}
+
+part5 <- c()
+for (i in 59:92){
+      part5[i] <- summary(svyglm(reformulate(paste0('factor(QN', i+7, ')'), response = 'factor(QN29)'), design = yrbsdes_subgroup, data = suicide_attempt, family = quasibinomial()))$coef[-1, "Pr(>|t|)"]
+      df5 <- data.frame(value = part5) %>% na.omit()
+}
+
+df_29_b <- data.frame(variable = c(1:5, 8:25, 30:32, 34:64, 66:99), value = rbind(df1, df2, df3, df4, df5))
+df_29_b %>%
+  arrange(value)
+```
+
+```{r, warning=FALSE}
+summary(svyglm(QN29 ~ QN69 + QN99 + QN43 + QN54, data = suicide_attempt, design = yrbsdes_subgroup, family = quasibinomial()))
+# QN69: Did not drink fruit juice 
+# QN99: How well do you speak English?        
+# QN43: During the past 30 days, what is the largest number of alcoholic drinks you had in a row, that is, within a couple of hours? (Binary: Reported that the largest number of drinks they had in a row was 10 or more)      
+# QN54: Ever used ecstasy 
+```
