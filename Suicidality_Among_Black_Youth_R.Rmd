@@ -24,6 +24,7 @@ library(survey)
 library(broom)
 library(MASS)
 library(jtools)
+library(epitools)
 library(plyr)
 
 data <- read.csv("yrbs2019.csv")
@@ -137,7 +138,8 @@ df_26 %>%
 ```
 
 ```{r}
-summary(svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN41+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN26 <- svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN41+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+summary(QN26)
 
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN24: Were electronically bullied (Electronic bullying)
@@ -145,6 +147,14 @@ summary(svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN41+QN2, data = black_data, design = 
 #QN23: Were bullied on school property (Bullying at school)
 #QN41: Current alcohol use; Dependence: Required by QN44
 #QN2: gender
+```
+
+```{r}
+# odds ratio
+summ(QN26, exp = TRUE)
+
+# 95% CI for odds ratio
+exp(confint(QN26))
 ```
 
 # QN27
@@ -180,12 +190,21 @@ df_27 %>%
 ```
 
 ```{r}
-summary(svyglm(QN27 ~ QN25+QN23+QN24+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN27 <- svyglm(QN27 ~ QN25+QN23+QN24+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+summary(QN27)
 
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN23: Were bullied on school property (Bullying at school)
 #QN24: Were electronically bullied (Electronic bullying)
 #QN2: gender
+```
+
+```{r}
+# odds ratio
+summ(QN27, exp = TRUE)
+
+# 95% CI for odds ratio
+exp(confint(QN27))
 ```
 
 # QN28
@@ -222,13 +241,22 @@ df_28 %>%
 ```
 
 ```{r}
-summary(svyglm(QN28 ~ QN23+QN25+QN1+QN49+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN28 <- svyglm(QN28 ~ QN23+QN25+QN1+QN49+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+summary(QN28)
 
 #QN23: Were bullied on school property (Bullying at school)
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN1: age
 #QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use )
 #QN2: gender
+```
+
+```{r}
+# odds ratio
+summ(QN28, exp = TRUE)
+
+# 95% CI for odds ratio
+exp(confint(QN28))
 ```
 
 # QN29
@@ -266,11 +294,20 @@ df_29_a %>%
 ```
 
 ```{r}
-summary(svyglm(QN29 ~ QN69+QN50+QN52+QN2, data = black_data, design = yrbsdes, family = quasibinomial()))
+QN29_a <- svyglm(QN29 ~ QN69+QN50+QN52+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+summary(QN29_a)
+  
 #QN69: Did not drink fruit juice (Fruit juice drinking)
 #QN50: Ever used cocaine 
 #QN52: Ever heroin use
 #QN2: gender
+```
+```{r}
+# odds ratio
+summ(QN29_a, exp = TRUE)
+
+# 95% CI for odds ratio
+exp(confint(QN29_a))
 ```
 
 ## Method 2: Subgroup analysis
@@ -343,9 +380,25 @@ df_29_b %>%
 ```
 
 ```{r, warning=FALSE}
-summary(svyglm(QN29 ~ QN69 + QN99 + QN43 + QN54, data = suicide_attempt, design = yrbsdes_subgroup, family = quasibinomial()))
+QN29_b <- svyglm(
+    QN29 ~ QN69 + QN99 + QN43 + QN54,
+    data = suicide_attempt,
+    design = yrbsdes_subgroup,
+    family = quasibinomial()
+  )
+
+summary(QN29_b)
+
 # QN69: Did not drink fruit juice 
 # QN99: How well do you speak English?        
 # QN43: During the past 30 days, what is the largest number of alcoholic drinks you had in a row, that is, within a couple of hours? (Binary: Reported that the largest number of drinks they had in a row was 10 or more)      
 # QN54: Ever used ecstasy 
+```
+
+```{r}
+# odds ratio
+summ(QN29_b, exp = TRUE)
+
+# 95% CI for odds ratio
+exp(confint(QN29_b))
 ```
