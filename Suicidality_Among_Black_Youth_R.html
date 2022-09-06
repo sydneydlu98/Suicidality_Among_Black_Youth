@@ -3232,11 +3232,29 @@ df_29_a %&gt;%
 {"columns":[{"label":["variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"69","2":"6.828575e-38"},{"1":"50","2":"1.413499e-08"},{"1":"52","2":"4.470913e-07"},{"1":"53","2":"8.805142e-07"},{"1":"38","2":"9.091687e-07"},{"1":"48","2":"1.647699e-06"},{"1":"54","2":"2.322280e-06"},{"1":"90","2":"2.394661e-06"},{"1":"37","2":"3.879264e-06"},{"1":"55","2":"7.159484e-06"},{"1":"60","2":"8.160211e-06"},{"1":"42","2":"9.346395e-06"},{"1":"91","2":"1.151357e-05"},{"1":"56","2":"1.395016e-05"},{"1":"25","2":"1.836043e-05"},{"1":"24","2":"2.026431e-05"},{"1":"49","2":"2.118065e-05"},{"1":"23","2":"2.252089e-05"},{"1":"96","2":"2.504171e-05"},{"1":"32","2":"3.043270e-05"},{"1":"59","2":"3.086835e-05"},{"1":"14","2":"4.517851e-05"},{"1":"31","2":"5.858611e-05"},{"1":"51","2":"1.236007e-04"},{"1":"41","2":"1.316456e-04"},{"1":"20","2":"4.246754e-04"},{"1":"21","2":"5.597076e-04"},{"1":"10","2":"5.768352e-04"},{"1":"13","2":"6.502445e-04"},{"1":"35","2":"8.997052e-04"},{"1":"9","2":"9.624192e-04"},{"1":"99","2":"9.693944e-04"},{"1":"61","2":"1.219238e-03"},{"1":"11","2":"1.273509e-03"},{"1":"22","2":"1.337510e-03"},{"1":"15","2":"1.857336e-03"},{"1":"30","2":"2.178906e-03"},{"1":"16","2":"2.290555e-03"},{"1":"12","2":"2.439997e-03"},{"1":"34","2":"2.968000e-03"},{"1":"40","2":"3.132439e-03"},{"1":"4","2":"3.843857e-03"},{"1":"18","2":"3.930033e-03"},{"1":"98","2":"3.975095e-03"},{"1":"94","2":"4.616675e-03"},{"1":"47","2":"1.040604e-02"},{"1":"75","2":"1.218838e-02"},{"1":"45","2":"1.333037e-02"},{"1":"17","2":"1.431839e-02"},{"1":"62","2":"1.444581e-02"},{"1":"19","2":"1.765130e-02"},{"1":"72","2":"1.769377e-02"},{"1":"66","2":"1.972599e-02"},{"1":"58","2":"1.973818e-02"},{"1":"85","2":"2.022731e-02"},{"1":"43","2":"2.684193e-02"},{"1":"8","2":"2.692417e-02"},{"1":"3","2":"4.249439e-02"},{"1":"33","2":"5.190798e-02"},{"1":"46","2":"5.371316e-02"},{"1":"73","2":"6.362248e-02"},{"1":"83","2":"6.371446e-02"},{"1":"97","2":"1.334042e-01"},{"1":"74","2":"1.377298e-01"},{"1":"79","2":"1.504244e-01"},{"1":"44","2":"1.745898e-01"},{"1":"71","2":"1.856853e-01"},{"1":"39","2":"2.480977e-01"},{"1":"5","2":"2.637099e-01"},{"1":"78","2":"2.969994e-01"},{"1":"57","2":"2.970610e-01"},{"1":"2","2":"2.979022e-01"},{"1":"80","2":"3.090165e-01"},{"1":"88","2":"3.346315e-01"},{"1":"67","2":"3.405930e-01"},{"1":"87","2":"4.403364e-01"},{"1":"36","2":"5.084979e-01"},{"1":"84","2":"5.279499e-01"},{"1":"70","2":"5.996356e-01"},{"1":"89","2":"6.452515e-01"},{"1":"68","2":"6.889571e-01"},{"1":"64","2":"7.250546e-01"},{"1":"81","2":"7.750083e-01"},{"1":"92","2":"7.819993e-01"},{"1":"63","2":"7.917899e-01"},{"1":"1","2":"8.095928e-01"},{"1":"76","2":"8.192721e-01"},{"1":"93","2":"8.317753e-01"},{"1":"82","2":"9.033381e-01"},{"1":"77","2":"9.499110e-01"},{"1":"95","2":"9.678999e-01"},{"1":"86","2":"9.905531e-01"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<pre class="r"><code>QN29_a &lt;- svyglm(QN29 ~ QN69+QN50+QN52+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+<pre class="r"><code># check the distribution
+table(black_data$QN29, black_data$QN69) # Do not include</code></pre>
+<pre><code>##    
+##        0    1
+##   0 1413  482
+##   1   36    0</code></pre>
+<pre class="r"><code># b/c we have 0 cells, so there is no variation at all for QN69
+
+table(black_data$QN28, black_data$QN50) # it is okay</code></pre>
+<pre><code>##    
+##        0    1
+##   0 1823   57
+##   1  124   23</code></pre>
+<pre class="r"><code>table(black_data$QN28, black_data$QN52) # it is okay</code></pre>
+<pre><code>##    
+##        0    1
+##   0 1813   54
+##   1  130   20</code></pre>
+<pre class="r"><code>QN29_a &lt;- svyglm(QN29 ~ QN50+QN52+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
 summary(QN29_a)</code></pre>
 <pre><code>## 
 ## Call:
-## svyglm(formula = QN29 ~ QN69 + QN50 + QN52 + QN2, design = yrbsdes, 
+## svyglm(formula = QN29 ~ QN50 + QN52 + QN2, design = yrbsdes, 
 ##     family = quasibinomial(), data = black_data)
 ## 
 ## Survey design:
@@ -3245,54 +3263,50 @@ summary(QN29_a)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  -4.5793     0.3530 -12.973 4.58e-14 ***
-## QN69        -17.4117     0.5132 -33.926  &lt; 2e-16 ***
-## QN50          2.4184     0.5828   4.149 0.000241 ***
-## QN52          1.8809     0.8115   2.318 0.027228 *  
-## QN2           0.9341     0.4625   2.020 0.052125 .  
+## (Intercept)  -4.7723     0.3087 -15.462  &lt; 2e-16 ***
+## QN50          2.2547     0.6400   3.523  0.00131 ** 
+## QN52          1.7686     0.7718   2.291  0.02867 *  
+## QN2           0.7634     0.3909   1.953  0.05962 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for quasibinomial family taken to be 0.6727108)
+## (Dispersion parameter for quasibinomial family taken to be 0.9052607)
 ## 
-## Number of Fisher Scoring iterations: 19</code></pre>
-<pre class="r"><code>#QN69: Did not drink fruit juice (Fruit juice drinking)
-#QN50: Ever used cocaine 
+## Number of Fisher Scoring iterations: 7</code></pre>
+<pre class="r"><code>#QN50: Ever used cocaine 
 #QN52: Ever heroin use
 #QN2: gender</code></pre>
 <pre class="r"><code># odds ratio
 summ(QN29_a, exp = TRUE)</code></pre>
 <pre><code>## MODEL INFO:
-## Observations: 1857
+## Observations: 1957
 ## Dependent Variable: QN29
 ## Type: Analysis of complex survey design 
 ##  Family: quasibinomial 
 ##  Link function: logit 
 ## 
 ## MODEL FIT:
-## Pseudo-R² (Cragg-Uhler) = 0.27
-## Pseudo-R² (McFadden) = 0.25
+## Pseudo-R² (Cragg-Uhler) = 0.19
+## Pseudo-R² (McFadden) = 0.17
 ## AIC =  NA 
 ## 
 ## ----------------------------------------------------
 ##                     exp(Est.)   S.E.   t val.      p
 ## ----------------- ----------- ------ -------- ------
-## (Intercept)              0.01   0.35   -12.97   0.00
-## QN69                     0.00   0.51   -33.93   0.00
-## QN50                    11.23   0.58     4.15   0.00
-## QN52                     6.56   0.81     2.32   0.03
-## QN2                      2.54   0.46     2.02   0.05
+## (Intercept)              0.01   0.31   -15.46   0.00
+## QN50                     9.53   0.64     3.52   0.00
+## QN52                     5.86   0.77     2.29   0.03
+## QN2                      2.15   0.39     1.95   0.06
 ## ----------------------------------------------------
 ## 
-## Estimated dispersion parameter = 0.67</code></pre>
+## Estimated dispersion parameter = 0.91</code></pre>
 <pre class="r"><code># 95% CI for odds ratio
 exp(confint(QN29_a))</code></pre>
-<pre><code>##                    2.5 %       97.5 %
-## (Intercept) 4.995586e-03 2.108119e-02
-## QN69        9.629063e-09 7.812252e-08
-## QN50        3.420064e+00 3.685718e+01
-## QN52        1.253393e+00 3.432432e+01
-## QN2         9.909013e-01 6.535822e+00</code></pre>
+<pre><code>##                  2.5 %      97.5 %
+## (Intercept) 0.00451199  0.01586567
+## QN50        2.58872578 35.10399466
+## QN52        1.21707263 28.24291099
+## QN2         0.96770195  4.75710106</code></pre>
 </div>
 <div id="method-2-subgroup-analysis" class="section level2">
 <h2>Method 2: Subgroup analysis</h2>
@@ -3364,8 +3378,13 @@ df_29_b %&gt;%
 {"columns":[{"label":["variable"],"name":[1],"type":["int"],"align":["right"]},{"label":["value"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"69","2":"3.511008e-14"},{"1":"99","2":"8.321816e-12"},{"1":"43","2":"5.998415e-10"},{"1":"54","2":"1.159207e-04"},{"1":"31","2":"2.963227e-04"},{"1":"91","2":"3.151880e-04"},{"1":"37","2":"3.648911e-04"},{"1":"11","2":"4.448718e-04"},{"1":"38","2":"1.057134e-03"},{"1":"96","2":"1.366119e-03"},{"1":"59","2":"1.993576e-03"},{"1":"93","2":"2.967868e-03"},{"1":"60","2":"3.918662e-03"},{"1":"9","2":"4.926663e-03"},{"1":"14","2":"5.434986e-03"},{"1":"68","2":"8.151689e-03"},{"1":"50","2":"9.233801e-03"},{"1":"48","2":"1.335688e-02"},{"1":"90","2":"1.593481e-02"},{"1":"53","2":"2.020296e-02"},{"1":"32","2":"2.507121e-02"},{"1":"52","2":"2.554421e-02"},{"1":"4","2":"2.855781e-02"},{"1":"30","2":"2.936706e-02"},{"1":"1","2":"2.959045e-02"},{"1":"21","2":"3.241943e-02"},{"1":"61","2":"3.259450e-02"},{"1":"73","2":"3.275557e-02"},{"1":"58","2":"5.386161e-02"},{"1":"42","2":"6.334164e-02"},{"1":"17","2":"6.763301e-02"},{"1":"56","2":"6.823648e-02"},{"1":"16","2":"8.127170e-02"},{"1":"3","2":"8.760939e-02"},{"1":"15","2":"9.248767e-02"},{"1":"8","2":"9.493391e-02"},{"1":"18","2":"1.001443e-01"},{"1":"71","2":"1.031855e-01"},{"1":"51","2":"1.070964e-01"},{"1":"13","2":"1.156501e-01"},{"1":"49","2":"1.194727e-01"},{"1":"10","2":"1.197064e-01"},{"1":"20","2":"1.280349e-01"},{"1":"2","2":"1.345320e-01"},{"1":"24","2":"1.373628e-01"},{"1":"85","2":"1.403712e-01"},{"1":"79","2":"1.443029e-01"},{"1":"86","2":"1.757971e-01"},{"1":"55","2":"1.859740e-01"},{"1":"64","2":"1.866193e-01"},{"1":"72","2":"1.992113e-01"},{"1":"35","2":"2.049316e-01"},{"1":"87","2":"2.364828e-01"},{"1":"47","2":"2.422127e-01"},{"1":"94","2":"2.773522e-01"},{"1":"75","2":"2.854537e-01"},{"1":"92","2":"2.925799e-01"},{"1":"41","2":"3.001346e-01"},{"1":"74","2":"3.026178e-01"},{"1":"44","2":"3.129102e-01"},{"1":"78","2":"3.163028e-01"},{"1":"76","2":"3.272225e-01"},{"1":"22","2":"3.346916e-01"},{"1":"97","2":"3.394462e-01"},{"1":"12","2":"3.605789e-01"},{"1":"19","2":"3.631450e-01"},{"1":"5","2":"4.002778e-01"},{"1":"77","2":"4.015449e-01"},{"1":"34","2":"4.057731e-01"},{"1":"23","2":"4.144254e-01"},{"1":"98","2":"4.647648e-01"},{"1":"25","2":"5.108731e-01"},{"1":"39","2":"5.293547e-01"},{"1":"46","2":"5.354028e-01"},{"1":"89","2":"5.374560e-01"},{"1":"80","2":"5.495878e-01"},{"1":"88","2":"5.717812e-01"},{"1":"62","2":"5.730174e-01"},{"1":"81","2":"5.935189e-01"},{"1":"63","2":"6.325716e-01"},{"1":"84","2":"6.532490e-01"},{"1":"67","2":"6.645325e-01"},{"1":"40","2":"7.053793e-01"},{"1":"36","2":"7.546495e-01"},{"1":"82","2":"7.686334e-01"},{"1":"70","2":"8.013960e-01"},{"1":"45","2":"8.279490e-01"},{"1":"66","2":"8.527428e-01"},{"1":"57","2":"8.646578e-01"},{"1":"83","2":"8.661860e-01"},{"1":"95","2":"9.864967e-01"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<pre class="r"><code>table(suicide_attempt$QN29, suicide_attempt$QN43) # It is NOT okay</code></pre>
+<pre><code>##    
+##      0  1
+##   0 55  0
+##   1 26  2</code></pre>
 <pre class="r"><code>QN29_b &lt;- svyglm(
-    QN29 ~ QN69 + QN99 + QN43 + QN54,
+    QN29 ~ QN54,
     data = suicide_attempt,
     design = yrbsdes_subgroup,
     family = quasibinomial()
@@ -3374,8 +3393,8 @@ df_29_b %&gt;%
 summary(QN29_b)</code></pre>
 <pre><code>## 
 ## Call:
-## svyglm(formula = QN29 ~ QN69 + QN99 + QN43 + QN54, design = yrbsdes_subgroup, 
-##     family = quasibinomial(), data = suicide_attempt)
+## svyglm(formula = QN29 ~ QN54, design = yrbsdes_subgroup, family = quasibinomial(), 
+##     data = suicide_attempt)
 ## 
 ## Survey design:
 ## svydesign(id = ~PSU, weight = ~WEIGHT, strata = ~STRATUM, data = suicide_attempt, 
@@ -3383,78 +3402,53 @@ summary(QN29_b)</code></pre>
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  16.5044     1.0000  16.504 7.32e-07 ***
-## QN69        -19.0858     0.7987 -23.896 5.72e-08 ***
-## QN99        -17.1197     1.0898 -15.710 1.03e-06 ***
-## QN43         15.6970     1.5343  10.231 1.84e-05 ***
-## QN54          2.7169     1.2412   2.189   0.0648 .  
+## (Intercept)  -0.9963     0.2592  -3.844 0.002335 ** 
+## QN54          2.2586     0.4032   5.601 0.000116 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## (Dispersion parameter for quasibinomial family taken to be 0.9476388)
+## (Dispersion parameter for quasibinomial family taken to be 1.207693)
 ## 
-## Number of Fisher Scoring iterations: 17</code></pre>
-<pre class="r"><code># QN69: Did not drink fruit juice 
-# QN99: How well do you speak English?        
-# QN43: During the past 30 days, what is the largest number of alcoholic drinks you had in a row, that is, within a couple of hours? (Binary: Reported that the largest number of drinks they had in a row was 10 or more)      
-# QN54: Ever used ecstasy </code></pre>
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code># QN54: Ever ecstasy use </code></pre>
 <pre class="r"><code># odds ratio
 summ(QN29_b, exp = TRUE)</code></pre>
 <pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
+## Stratum (103) has only one PSU at stage 1
+
+## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
+## Stratum (103) has only one PSU at stage 1
+
+## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
+## Stratum (103) has only one PSU at stage 1
+
+## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
 ## Stratum (103) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (211) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (214) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (103) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (211) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (214) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (103) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (211) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (214) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (103) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (211) has only one PSU at stage 1</code></pre>
-<pre><code>## Warning in onestrat(x[index, , drop = FALSE], clusters[index], nPSU[index][1], :
-## Stratum (214) has only one PSU at stage 1</code></pre>
 <pre><code>## MODEL INFO:
-## Observations: 71
+## Observations: 113
 ## Dependent Variable: QN29
 ## Type: Analysis of complex survey design 
 ##  Family: quasibinomial 
 ##  Link function: logit 
 ## 
 ## MODEL FIT:
-## Pseudo-R² (Cragg-Uhler) = 0.14
-## Pseudo-R² (McFadden) = 0.09
+## Pseudo-R² (Cragg-Uhler) = -0.13
+## Pseudo-R² (McFadden) = -0.07
 ## AIC =  NA 
 ## 
-## ------------------------------------------------------
-##                       exp(Est.)   S.E.   t val.      p
-## ----------------- ------------- ------ -------- ------
-## (Intercept)         14715173.84   1.00    16.50   0.00
-## QN69                       0.00   0.80   -23.90   0.00
-## QN99                       0.00   1.09   -15.71   0.00
-## QN43                 6563180.46   1.53    10.23   0.00
-## QN54                      15.13   1.24     2.19   0.06
-## ------------------------------------------------------
+## ----------------------------------------------------
+##                     exp(Est.)   S.E.   t val.      p
+## ----------------- ----------- ------ -------- ------
+## (Intercept)              0.37   0.26    -3.84   0.00
+## QN54                     9.57   0.40     5.60   0.00
+## ----------------------------------------------------
 ## 
-## Estimated dispersion parameter = 0.95</code></pre>
+## Estimated dispersion parameter = 1.21</code></pre>
 <pre class="r"><code># 95% CI for odds ratio
 exp(confint(QN29_b))</code></pre>
-<pre><code>##                    2.5 %       97.5 %
-## (Intercept) 1.383000e+06 1.565701e+08
-## QN69        7.778439e-10 3.399053e-08
-## QN99        2.791755e-09 4.831840e-07
-## QN43        1.743864e+05 2.470109e+08
-## QN54        8.040286e-01 2.848455e+02</code></pre>
+<pre><code>##                 2.5 %     97.5 %
+## (Intercept) 0.2099126  0.6494593
+## QN54        3.9749431 23.0380328</code></pre>
 </div>
 </div>
 

@@ -294,10 +294,15 @@ df_29_a %>%
 ```
 
 ```{r}
-QN29_a <- svyglm(QN29 ~ QN69+QN50+QN52+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+# check the distribution
+table(black_data$QN29, black_data$QN69) # Do not include
+# b/c we have 0 cells, so there is no variation at all for QN69
+
+table(black_data$QN28, black_data$QN50) # it is okay
+table(black_data$QN28, black_data$QN52) # it is okay
+
+QN29_a <- svyglm(QN29 ~ QN50+QN52+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
 summary(QN29_a)
-  
-#QN69: Did not drink fruit juice (Fruit juice drinking)
 #QN50: Ever used cocaine 
 #QN52: Ever heroin use
 #QN2: gender
@@ -380,8 +385,10 @@ df_29_b %>%
 ```
 
 ```{r, warning=FALSE}
+table(suicide_attempt$QN29, suicide_attempt$QN43) # It is NOT okay
+
 QN29_b <- svyglm(
-    QN29 ~ QN69 + QN99 + QN43 + QN54,
+    QN29 ~ QN54,
     data = suicide_attempt,
     design = yrbsdes_subgroup,
     family = quasibinomial()
@@ -389,10 +396,7 @@ QN29_b <- svyglm(
 
 summary(QN29_b)
 
-# QN69: Did not drink fruit juice 
-# QN99: How well do you speak English?        
-# QN43: During the past 30 days, what is the largest number of alcoholic drinks you had in a row, that is, within a couple of hours? (Binary: Reported that the largest number of drinks they had in a row was 10 or more)      
-# QN54: Ever used ecstasy 
+# QN54: Ever ecstasy use 
 ```
 
 ```{r}
