@@ -26,6 +26,7 @@ library(MASS)
 library(jtools)
 library(epitools)
 library(plyr)
+library(pROC)
 
 data <- read.csv("yrbs2019.csv")
 ```
@@ -138,7 +139,7 @@ df_26 %>%
 ```
 
 ```{r}
-QN26 <- svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN41+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+QN26 <- svyglm(QN26 ~ QN25+QN24+QN66+QN23+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
 summary(QN26)
 
 #QN25: Felt sad or hopeless (Sad or hopeless)
@@ -147,6 +148,52 @@ summary(QN26)
 #QN23: Were bullied on school property (Bullying at school)
 #QN41: Current alcohol use; Dependence: Required by QN44
 #QN2: gender
+ 
+black_data_QN26 <- black_data[, c('QN26', 'QN25', 'QN24', 'QN66', 'QN23', 'QN41','QN2')]
+black_data_QN26 <- na.omit(black_data_QN26)
+
+# predicted data
+prediction <- predict(QN26, black_data_QN26, type="response")
+
+# create roc curve
+roc_object <- roc(black_data_QN26$QN26, prediction)
+ 
+# calculate area under curve
+auc(roc_object) 
+```
+```{r}
+predROC <- function (glm.obj, newData, plot = TRUE)
+{
+
+  options(survey.lonely.psu="adjust")
+
+  pred <- rep(NA, nrow(newData)); names(pred) <- rownames(newData)
+  model_terms <- attributes(glm.obj$terms)$variables
+  predictors <- as.character(model_terms[3:length(model_terms)])
+  response <-  as.character(model_terms[2])
+  newData <- newData[,c("WEIGHT",response,predictors)]
+  xnn <- na.omit(newData)
+  pred[-attr(xnn, "na.action")] <- predict(glm.obj, xnn)
+  guess <- 1/(1+exp(-pred))
+  dframe <- data.frame(response=ifelse(newData[, response]==0, -1, 1),
+                       guess=guess,
+                       WEIGHT=newData$WEIGHT)
+  dframe <- na.omit(dframe)
+  subset(WeightedROC::WeightedROC(dframe$guess, dframe$response, weight=dframe$WEIGHT), select=c(FPR, TPR))
+}
+
+simple_auc <- function(TPR, FPR){
+  # inputs already sorted, best scores first 
+  dFPR <- c(diff(FPR), 0)
+  dTPR <- c(diff(TPR), 0)
+  sum(TPR * dFPR) + sum(dTPR * dFPR)/2
+}
+
+QN26_ROC <- predROC(QN26, black_data, plot = TRUE)
+# plot ROC curve
+plot(QN26_ROC$FPR, QN26_ROC$TPR)
+# find AUC
+-simple_auc(QN26_ROC$TPR, QN26_ROC$FPR)
 ```
 
 ```{r}
@@ -154,7 +201,7 @@ summary(QN26)
 summ(QN26, exp = TRUE)
 
 # 95% CI for odds ratio
-exp(confint(QN26))
+round(exp(confint(QN26)), 2)
 ```
 
 # QN27
@@ -190,13 +237,18 @@ df_27 %>%
 ```
 
 ```{r}
-QN27 <- svyglm(QN27 ~ QN25+QN23+QN24+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+QN27 <- svyglm(QN27 ~ QN25+QN23+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
 summary(QN27)
 
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN23: Were bullied on school property (Bullying at school)
 #QN24: Were electronically bullied (Electronic bullying)
 #QN2: gender
+
+QN27_ROC <- predROC(QN27, black_data, plot = TRUE)
+plot(QN27_ROC$FPR, QN27_ROC$TPR)
+
+-simple_auc(QN27_ROC$TPR, QN27_ROC$FPR) %>% round(2)
 ```
 
 ```{r}
@@ -204,7 +256,7 @@ summary(QN27)
 summ(QN27, exp = TRUE)
 
 # 95% CI for odds ratio
-exp(confint(QN27))
+exp(confint(QN27)) %>% round(2)
 ```
 
 # QN28
@@ -241,14 +293,20 @@ df_28 %>%
 ```
 
 ```{r}
-QN28 <- svyglm(QN28 ~ QN23+QN25+QN1+QN49+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
+QN28 <- svyglm(QN28 ~ QN23+QN25+QN2, data = black_data, design = yrbsdes, family = quasibinomial())
 summary(QN28)
 
 #QN23: Were bullied on school property (Bullying at school)
 #QN25: Felt sad or hopeless (Sad or hopeless)
 #QN1: age
-#QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use )
+#QN49: Ever took prescription pain medicine without a doctor's prescription or differently than how a doctor told them to use it (Ever prescription pain medicine use)
 #QN2: gender
+
+QN28_ROC <- predROC(QN28, black_data, plot = TRUE)
+# plot ROC curve
+plot(QN28_ROC$FPR, QN28_ROC$TPR)
+# find AUC
+-simple_auc(QN28_ROC$TPR, QN28_ROC$FPR) %>% round(2)
 ```
 
 ```{r}
@@ -256,7 +314,7 @@ summary(QN28)
 summ(QN28, exp = TRUE)
 
 # 95% CI for odds ratio
-exp(confint(QN28))
+exp(confint(QN28)) %>% round(2)
 ```
 
 # QN29
@@ -306,13 +364,20 @@ summary(QN29_a)
 #QN50: Ever used cocaine 
 #QN52: Ever heroin use
 #QN2: gender
+
+QN29_a_ROC <- predROC(QN29_a, black_data, plot = TRUE)
+# plot ROC curve
+plot(QN29_a_ROC$FPR, QN29_a_ROC$TPR)
+# find AUC
+-simple_auc(QN29_a_ROC$TPR, QN29_a_ROC$FPR) %>% round(2)
 ```
+
 ```{r}
 # odds ratio
 summ(QN29_a, exp = TRUE)
 
 # 95% CI for odds ratio
-exp(confint(QN29_a))
+exp(confint(QN29_a)) %>% round(2)
 ```
 
 ## Method 2: Subgroup analysis
@@ -388,7 +453,7 @@ df_29_b %>%
 table(suicide_attempt$QN29, suicide_attempt$QN43) # It is NOT okay
 
 QN29_b <- svyglm(
-    QN29 ~ QN54,
+    QN29 ~ QN54+QN2,
     data = suicide_attempt,
     design = yrbsdes_subgroup,
     family = quasibinomial()
@@ -397,6 +462,12 @@ QN29_b <- svyglm(
 summary(QN29_b)
 
 # QN54: Ever ecstasy use 
+
+QN29_b_ROC <- predROC(QN29_b, suicide_attempt, plot = TRUE)
+# plot ROC curve
+plot(QN29_b_ROC$FPR, QN29_b_ROC$TPR)
+# find AUC
+-simple_auc(QN29_b_ROC$TPR, QN29_b_ROC$FPR)  %>% round(2)
 ```
 
 ```{r}
@@ -404,5 +475,5 @@ summary(QN29_b)
 summ(QN29_b, exp = TRUE)
 
 # 95% CI for odds ratio
-exp(confint(QN29_b))
+exp(confint(QN29_b)) %>% round(2)
 ```
